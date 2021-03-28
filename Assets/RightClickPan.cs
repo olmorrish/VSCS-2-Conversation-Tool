@@ -6,6 +6,9 @@ public class RightClickPan : MonoBehaviour {
 
     Vector3 mousePos;
     Vector3 mousePosDiff;
+    public float scrollSensitivity;
+    public float minZoom;
+    public float maxZoom;
 
     // Start is called before the first frame update
     void Start() {
@@ -24,5 +27,15 @@ public class RightClickPan : MonoBehaviour {
         else if (Input.GetMouseButton(1)) {
             transform.position -= mousePosDiff;
         }
+
+        if(Input.GetAxis("Mouse ScrollWheel") > 0) {
+            Debug.Log("yes");
+        }
+
+        //zoom with scroll
+        float fov = Camera.main.orthographicSize;
+        fov -= Input.GetAxis("Mouse ScrollWheel") * scrollSensitivity;
+        fov = Mathf.Clamp(fov, minZoom, maxZoom);
+        Camera.main.orthographicSize = fov;
     }
 }
