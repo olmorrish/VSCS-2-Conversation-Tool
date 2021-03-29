@@ -28,10 +28,6 @@ public class RightClickPan : MonoBehaviour {
             transform.position -= mousePosDiff;
         }
 
-        if(Input.GetAxis("Mouse ScrollWheel") > 0) {
-            Debug.Log("yes");
-        }
-
         //zoom with scroll
         float fov = Camera.main.orthographicSize;
         fov -= Input.GetAxis("Mouse ScrollWheel") * scrollSensitivity;

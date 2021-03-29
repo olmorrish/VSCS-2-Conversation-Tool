@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClickAndDragWindow : MonoBehaviour {
+public class ClickAndDragNode : MonoBehaviour {
 
     //private ViewController viewController;
 
@@ -10,9 +10,9 @@ public class ClickAndDragWindow : MonoBehaviour {
     private float clickPosX;
     private float clickPosY;
 
-    private Vector2 topLeftPositionLimit;
-    private Vector2 bottomRightPositionLimit;
-    private float initialZPos;
+    //private Vector2 topLeftPositionLimit;
+    //private Vector2 bottomRightPositionLimit;
+    //private float initialZPos;
 
     public bool isPopupSized;
 
@@ -20,9 +20,9 @@ public class ClickAndDragWindow : MonoBehaviour {
     void Start() {
         //viewController = GameObject.Find("ViewControllerObject").GetComponent<ViewController>();
         mouseHeldDown = false;
-        topLeftPositionLimit = isPopupSized ? new Vector2(-16f, 5.85f) : new Vector2(-16f, 9.33f); //popups are not as tall
-        bottomRightPositionLimit = isPopupSized ? new Vector2(16f, -9f) : new Vector2(16f, -8.33f);
-        initialZPos = transform.position.z;
+        //topLeftPositionLimit = isPopupSized ? new Vector2(-16f, 5.85f) : new Vector2(-16f, 9.33f); //popups are not as tall
+        //bottomRightPositionLimit = isPopupSized ? new Vector2(16f, -9f) : new Vector2(16f, -8.33f);
+        //initialZPos = transform.position.z;
     }
 
     // Update is called once per frame
@@ -33,20 +33,20 @@ public class ClickAndDragWindow : MonoBehaviour {
         }
 
         //Restrict position horizontal
-        if (transform.position.x < topLeftPositionLimit.x) {
-            transform.position = new Vector3(topLeftPositionLimit.x, transform.position.y, initialZPos);
-        }
-        else if (transform.position.x > bottomRightPositionLimit.x) {
-            transform.position = new Vector3(bottomRightPositionLimit.x, transform.position.y, initialZPos);
-        }
+        //if (transform.position.x < topLeftPositionLimit.x) {
+        //    transform.position = new Vector3(topLeftPositionLimit.x, transform.position.y, initialZPos);
+        //}
+        //else if (transform.position.x > bottomRightPositionLimit.x) {
+        //    transform.position = new Vector3(bottomRightPositionLimit.x, transform.position.y, initialZPos);
+        //}
 
-        //Restrict position vertical
-        if (transform.position.y > topLeftPositionLimit.y) {
-            transform.position = new Vector3(transform.position.x, topLeftPositionLimit.y, initialZPos);
-        }
-        else if (transform.position.y < bottomRightPositionLimit.y) {
-            transform.position = new Vector3(transform.position.x, bottomRightPositionLimit.y, initialZPos);
-        }
+        ////Restrict position vertical
+        //if (transform.position.y > topLeftPositionLimit.y) {
+        //    transform.position = new Vector3(transform.position.x, topLeftPositionLimit.y, initialZPos);
+        //}
+        //else if (transform.position.y < bottomRightPositionLimit.y) {
+        //    transform.position = new Vector3(transform.position.x, bottomRightPositionLimit.y, initialZPos);
+        //}
     }
 
     private void OnMouseDown() {
