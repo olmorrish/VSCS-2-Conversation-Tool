@@ -21,6 +21,13 @@ public class ConnectionNub : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+
+        //redraw the connection each frame if there is a connected node, in case one moves.
+        if(connectedNub != null) {
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, connectedNub.transform.position);
+        }
+
         if (mouseHeldDown) {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             line.SetPosition(0, transform.position);
@@ -62,11 +69,9 @@ public class ConnectionNub : MonoBehaviour {
         }
 
         if(!nubBelow) {
-            line.SetPosition(1, transform.position); //reset, no nub
+            ResetLineRenderer(); //no nub
         }
         else {
-            Debug.Log("CONNECTION: " + ray.collider.gameObject.name);
-
             //connect to the other nub
             GameObject connectingTo = ray.collider.gameObject;
             connectedNub = connectingTo.GetComponent<ConnectionNub>();
