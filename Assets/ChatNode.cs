@@ -31,4 +31,8 @@ public class ChatNode : MonoBehaviour {
     void Update() {
         
     }
+
+    public void DeleteNode() {
+        Destroy(this.gameObject);
+    }
 }

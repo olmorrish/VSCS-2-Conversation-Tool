@@ -17,6 +17,8 @@ public class ConnectionNub : MonoBehaviour {
         mouseHeldDown = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
         line = GetComponent<LineRenderer>();
+
+        Debug.Log(GetParentChatNode().gameObject.name);
     }
 
     // Update is called once per frame
@@ -27,12 +29,17 @@ public class ConnectionNub : MonoBehaviour {
             line.SetPosition(0, transform.position);
             line.SetPosition(1, connectedNub.transform.position);
         }
+        else {
+            ResetLineRenderer();
+        }
+
 
         if (mouseHeldDown) {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, mousePos);
         }
+
         spriteRenderer.color = connectedNub == null ? Color.white : Color.cyan;
     }
 
@@ -83,6 +90,21 @@ public class ConnectionNub : MonoBehaviour {
     }
 
     public void ResetLineRenderer() {
+        line.SetPosition(0, transform.position);
         line.SetPosition(1, transform.position);
+    }
+
+    /*
+     * Recursively goes up the chain until the ChatNode this nub is attached to is found
+     */
+    public ChatNode GetParentChatNode() {
+
+        GameObject obj = this.gameObject;
+
+        while (obj.GetComponent<ChatNode>() == null) {
+            obj = obj.transform.parent.gameObject;
+        }
+
+        return obj.GetComponent<ChatNode>();
     }
 }
