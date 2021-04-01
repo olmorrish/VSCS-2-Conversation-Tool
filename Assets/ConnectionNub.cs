@@ -26,7 +26,7 @@ public class ConnectionNub : MonoBehaviour {
             line.SetPosition(0, transform.position);
             line.SetPosition(1, mousePos);
         }
-        spriteRenderer.color = connectedNub == null ? Color.red : Color.cyan;
+        spriteRenderer.color = connectedNub == null ? Color.white : Color.cyan;
     }
 
     private void OnMouseDown() {
@@ -39,7 +39,7 @@ public class ConnectionNub : MonoBehaviour {
             //decouple nubs if one is clicked, and reset their line
             if(connectedNub != null) {
                 connectedNub.connectedNub = null;
-                connectedNub.gameObject.GetComponent<LineRenderer>().SetPosition(1, connectedNub.gameObject.transform.position);
+                connectedNub.ResetLineRenderer();
             }
             connectedNub = null;
         }
@@ -77,4 +77,7 @@ public class ConnectionNub : MonoBehaviour {
         }
     }
 
+    public void ResetLineRenderer() {
+        line.SetPosition(1, transform.position);
+    }
 }
