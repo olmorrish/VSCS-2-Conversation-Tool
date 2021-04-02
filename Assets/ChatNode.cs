@@ -26,9 +26,13 @@ public class ChatNode : MonoBehaviour {
 
     [Header("Internal References")]
     public GameObject myCanvas;
+    public TMPro.TMP_InputField idInputField;
     public TMPro.TMP_Dropdown nodetypeDropdown;
 
-    public GameObject currentVariantPanel;
+    [Header("State")]
+    public GameObject currentVariantPanelObject;
+    public VariantPanel currentVariantPanel;
+    ChatNodeType selectedType;
     //public VariantPanel currentVariantPanel;
 
     // Start is called before the first frame update
@@ -52,29 +56,53 @@ public class ChatNode : MonoBehaviour {
 
     void NodeTypeSelected(TMPro.TMP_Dropdown dropdown) {
         string text = dropdown.options[dropdown.value].text;
-        Debug.Log("Selected: " + text);
-        ChatNodeType selected = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
+        selectedType = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
 
-        //spawn in the proper variant panel
-        ClearVariantPanel();
-        SpawnVariantPanel(selected);
-    }
-
-    private void ClearVariantPanel() {
-        Destroy(currentVariantPanel);
+        //spawn in the proper variant panel, remove old one
+        SpawnVariantPanel(selectedType);
     }
 
     private void SpawnVariantPanel(ChatNodeType selected) {
+        currentVariantPanel = null;
+        Destroy(currentVariantPanelObject);
 
         switch (selected) {
             case ChatNodeType.Dialogue:
-                Instantiate(VariantPanelDialogue, myCanvas.transform);
+                currentVariantPanelObject = Instantiate(VariantPanelDialogue, myCanvas.transform);
                 break;
         }
 
+        currentVariantPanel = currentVariantPanelObject.GetComponent<VariantPanel>();
+    }
+
+    /*
+     * Used by other nodes to get ID for connections
+     */
+    public string GetID() {
+        return idInputField.text;
     }
 
     public void DeleteNode() {
         Destroy(this.gameObject);
+    }
+
+    public Dictionary<string, string> GetChatNodeData() {
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data.Add("id", idInputField.text);
+        data.Add("nodetype", selectedType.ToString());
+
+        //add all the data that the Variant Panel gives
+        foreach(KeyValuePair<string, string> entry in currentVariantPanel.GetVariantPanelData()) {
+            data.Add(entry.Key, entry.Value);
+        }
+
+        //TODO Apply post-processing to some fields
+
+        return data;
+    }
+
+    public List<ChatNode> GetAllPreviousNodes() {
+        throw new NotImplementedException();
     }
 }

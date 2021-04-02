@@ -1808,7 +1808,7 @@ GameObject:
   - component: {fileID: 7537603172546217318}
   - component: {fileID: 7537603172546217317}
   m_Layer: 5
-  m_Name: InputField (TMP)
+  m_Name: IDInputField (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2647,6 +2647,7 @@ MonoBehaviour:
   VariantPanelDialogue: {fileID: 2373794502806212672, guid: 35457328a807d4a4b9de9b7662b38e47,
     type: 3}
   myCanvas: {fileID: 7537603173394672391}
+  idInputField: {fileID: 7537603172546217317}
   nodetypeDropdown: {fileID: 7537603171702589362}
   currentVariantPanel: {fileID: 3724837926631563356}
 --- !u!1 &7537603173394672391
