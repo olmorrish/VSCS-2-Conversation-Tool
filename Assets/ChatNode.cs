@@ -82,6 +82,10 @@ public class ChatNode : MonoBehaviour {
         return idInputField.text;
     }
 
+    public void DuplicateNode() {
+        GameObject.Find("NodeController").GetComponent<NodeController>().SpawnNewChatNode(this.gameObject);
+    }
+
     public void DeleteNode() {
         Destroy(this.gameObject);
     }
@@ -100,6 +104,13 @@ public class ChatNode : MonoBehaviour {
         //TODO Apply post-processing to some fields
 
         return data;
+    }
+
+    public void PopulateChatNodeData(Dictionary<string, string> data) {
+        throw new NotImplementedException();
+        //populate id and nodetype
+        //spawn variant panel
+        //tell variant panel to populate
     }
 
     public List<ChatNode> GetAllPreviousNodes() {
