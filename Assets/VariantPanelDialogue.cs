@@ -13,7 +13,10 @@ public class VariantPanelDialogue : VariantPanel {
         Dictionary<string, string> ret = new Dictionary<string, string>();
         ret.Add("speaker", speakerInputField.text);
         ret.Add("dialogue", dialogueInputField.text);   //TODO post processing on the dialogue for quotes and segments and such, can be done when serializing to JSON
-        ret.Add("next", nextNub.GetParentChatNode().GetID());
+
+        ConnectionNub nubOnNextNode = nextNub.connectedNub;
+        ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+
         return ret;
     }
 

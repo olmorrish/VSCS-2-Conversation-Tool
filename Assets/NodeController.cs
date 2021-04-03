@@ -32,8 +32,13 @@ public class NodeController : MonoBehaviour {
     /* Copy spawner, called by chatnodes
      */
     public void SpawnNewChatNode(GameObject toCopy) {
+
         GameObject newChatNode = Instantiate(toCopy, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+
+        //copy the nodetype of the previous node; this doesn't copy over cleanly otherwise
+        int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
+        newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
     }
 
     /*
