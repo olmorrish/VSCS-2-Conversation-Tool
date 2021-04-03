@@ -33,11 +33,8 @@ public class ChatNode : MonoBehaviour {
     public GameObject currentVariantPanelObject;
     public VariantPanel currentVariantPanel;
     ChatNodeType selectedType;
-    //public VariantPanel currentVariantPanel;
 
-    // Start is called before the first frame update
-    void Start() {
-
+    private void Awake() {        
         nodetypeDropdown.ClearOptions();
 
         List<string> optionsToAdd = new List<string>();
@@ -46,7 +43,12 @@ public class ChatNode : MonoBehaviour {
         }
         nodetypeDropdown.AddOptions(optionsToAdd);
 
+    }
+
+    // Start is called before the first frame update
+    void Start() {
         nodetypeDropdown.onValueChanged.AddListener(delegate { NodeTypeSelected(nodetypeDropdown); });
+
     }
 
     // Update is called once per frame
@@ -96,9 +98,14 @@ public class ChatNode : MonoBehaviour {
         data.Add("id", idInputField.text);
         data.Add("nodetype", selectedType.ToString());
 
-        //add all the data that the Variant Panel gives
-        foreach(KeyValuePair<string, string> entry in currentVariantPanel.GetVariantPanelData()) {
-            data.Add(entry.Key, entry.Value);
+        //add all the data that the Variant Panel gives, give warning if there isn't one
+        if(currentVariantPanel == null) {
+            Debug.LogError("ERROR EXPORTING: A node in the graph does not have a variant panel specified: ID of node is: \"" + GetID() + "\".");
+        }
+        else {
+            foreach(KeyValuePair<string, string> entry in currentVariantPanel.GetVariantPanelData()) {
+                data.Add(entry.Key, entry.Value);
+            }
         }
 
         //TODO Apply post-processing to some fields

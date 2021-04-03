@@ -35,4 +35,41 @@ public class NodeController : MonoBehaviour {
         GameObject newChatNode = Instantiate(toCopy, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
     }
+
+    /*
+     * Starting at the marked head node, 
+     */
+    public void RetrieveAndSaveAllNodeData() {
+
+        //find the head node
+        string headNodeID = headIDInputField.text;
+
+        if (headNodeID.Equals("")) {
+            Debug.LogWarning("ERROR EXPORTING: No head node ID was specified.");
+            return;
+        }
+
+
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");  
+        ChatNode headNode = null;
+        foreach(GameObject chatNodeObj in allNodes) {
+            ChatNode chatNode = chatNodeObj.GetComponent<ChatNode>();
+            if (chatNode.GetID().Equals(headNodeID)) {
+                headNode = chatNode;
+                break;
+            }
+        }
+
+        if(headNode == null) {
+            Debug.LogWarning("ERROR EXPORTING: Head node with ID \"" + headNodeID + "\" could not be found.");
+            return;
+        }
+
+        //create a convodata then recursively go over each node and get it's data
+        ConversationData allData = new ConversationData();
+        allData.AddNodeEntry(headNode.GetChatNodeData());
+
+        Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
+
+    }
 }
