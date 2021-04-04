@@ -28,17 +28,17 @@ public class VariantPanelBranchOnStoredBool : VariantPanel {
         throw new System.NotImplementedException();
     }
 
-    public override ChatNode[] GetDescendantChatNodes() {
+    public override List<ChatNode> GetDescendantChatNodes() {
 
         List<ChatNode> nexts = new List<ChatNode>();
 
-        if (nextNubTrue.connectedNub == null) { //either one of the connections may be null
+        if (nextNubTrue.connectedNub != null) { //either one of the connections may be null
             nexts.Add(nextNubTrue.connectedNub.GetParentChatNode());
         }
-        if (nextNubFalse.connectedNub == null) {
+        if (nextNubFalse.connectedNub != null) {
             nexts.Add(nextNubFalse.connectedNub.GetParentChatNode());
         }
 
-        return nexts.ToArray();
+        return nexts;
     }
 }

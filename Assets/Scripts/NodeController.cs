@@ -89,7 +89,7 @@ public class NodeController : MonoBehaviour {
         allData.AddNodeEntry(headNode.GetChatNodeData());
 
         //topologically sort all nodes in the scene
-        TopologicalSortNodes(allChatNodes);
+        TopologicalSortNodes(allChatNodes, headNode);
 
 
         Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
@@ -107,7 +107,7 @@ public class NodeController : MonoBehaviour {
      * ALG REF: https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
      * Returns: Nothing; stores nodes in local variable sortedNodes. Cleaner signatures. 
      */
-    private void TopologicalSortNodes(ChatNode[] nodesToSort) {
+    private void TopologicalSortNodes(ChatNode[] nodesToSort, ChatNode headNode) {
 
         //set up the marks, all false by default 
         temporaryMarks = new Dictionary<string, bool>();
@@ -119,13 +119,16 @@ public class NodeController : MonoBehaviour {
 
         //DFS topological sort, loop until all a nodes permanently marked
         sortedNodes = new List<ChatNode>();
-        while (!AllNodesMarkedPermanent(nodesToSort)) {
-            foreach(ChatNode n in nodesToSort) {
-                if (permanentMarks[n.GetID()] == false) {
-                    VisitNode(n);
-                }
-            }
-        }
+
+        VisitNode(headNode);
+
+        //while (!AllNodesMarkedPermanent(nodesToSort)) {
+        //    foreach(ChatNode n in nodesToSort) {
+        //        if (permanentMarks[n.GetID()] == false) {
+        //            VisitNode(n);
+        //        }
+        //    }
+        //}
 
         //TODO: remove this debug print
         string s = "";

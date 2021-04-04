@@ -24,13 +24,13 @@ public class VariantPanelDialogue : VariantPanel {
         throw new System.NotImplementedException();
     }
 
-    public override ChatNode[] GetDescendantChatNodes() {
+    public override List<ChatNode> GetDescendantChatNodes() {
 
         if(nextNub.connectedNub == null) {
-            return new ChatNode[] { }; //no connection => no descendants
+            return new List<ChatNode> { }; //no connection => no descendants
         }
         else {
-            return new ChatNode[] { nextNub.connectedNub.GetParentChatNode() };
+            return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
         }
 
     }
