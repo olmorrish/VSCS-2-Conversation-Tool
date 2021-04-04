@@ -26,7 +26,12 @@ public class VariantPanelDialogue : VariantPanel {
 
     public override ChatNode[] GetDescendantChatNodes() {
 
-        return new ChatNode[] { nextNub.connectedNub.GetParentChatNode() };
+        if(nextNub.connectedNub == null) {
+            return new ChatNode[] { }; //no connection => no descendants
+        }
+        else {
+            return new ChatNode[] { nextNub.connectedNub.GetParentChatNode() };
+        }
 
     }
 

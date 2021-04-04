@@ -22,7 +22,8 @@ public enum ChatNodeType {
 public class ChatNode : MonoBehaviour {
 
     [Header("Variant Panel Prefabs")]
-    public GameObject VariantPanelDialogue;
+    public GameObject variantPanelBranchOnStoredBool;
+    public GameObject variantPanelDialogue;
 
     [Header("Internal References")]
     public GameObject myCanvas;
@@ -69,8 +70,11 @@ public class ChatNode : MonoBehaviour {
         Destroy(currentVariantPanelObject);
 
         switch (selected) {
+            case ChatNodeType.BranchOnStoredBool:
+                currentVariantPanelObject = Instantiate(variantPanelBranchOnStoredBool, myCanvas.transform);
+                break;
             case ChatNodeType.Dialogue:
-                currentVariantPanelObject = Instantiate(VariantPanelDialogue, myCanvas.transform);
+                currentVariantPanelObject = Instantiate(variantPanelDialogue, myCanvas.transform);
                 break;
         }
 

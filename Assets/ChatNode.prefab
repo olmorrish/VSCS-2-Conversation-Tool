@@ -3006,12 +3006,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23aece568cd5e724f8b844cf181fe170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VariantPanelDialogue: {fileID: 2855705599277495677, guid: 35457328a807d4a4b9de9b7662b38e47,
+  variantPanelBranchOnStoredBool: {fileID: 7408015644393334697, guid: 8bc12a6fa360b0e43a106ec8177e4fa4,
+    type: 3}
+  variantPanelDialogue: {fileID: 2855705599277495677, guid: 35457328a807d4a4b9de9b7662b38e47,
     type: 3}
   myCanvas: {fileID: 7537603173394672391}
   idInputField: {fileID: 7537603172546217317}
   nodetypeDropdown: {fileID: 7537603171702589362}
-  currentVariantPanelObject: {fileID: 0}
+  currentVariantPanelObject: {fileID: 3724837926631563356}
   currentVariantPanel: {fileID: 0}
 --- !u!1 &7537603173394672391
 GameObject:

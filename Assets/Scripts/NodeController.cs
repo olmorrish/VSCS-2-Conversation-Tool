@@ -89,11 +89,12 @@ public class NodeController : MonoBehaviour {
         allData.AddNodeEntry(headNode.GetChatNodeData());
 
         //topologically sort all nodes in the scene
-        //TopologicalSortNodes(allChatNodes);
+        TopologicalSortNodes(allChatNodes);
 
 
         Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
 
+        //TODO once data is collected, error check, ex: for duplicate node IDs
         //TODO once data is collected, convert to a JSON file
 
     }
@@ -126,11 +127,12 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-        //DEBUG PRINT
-        Debug.Log("PRINTING ORDERED LIST");
+        //TODO: remove this debug print
+        string s = "";
         foreach (ChatNode sortedNode in sortedNodes) {
-            Debug.Log("ORDERED: " + sortedNode.GetID());
+            s += sortedNode.GetID() + " ,";
         }
+        Debug.Log("TOP. ORDERED NODES: " + s);
     }
 
 

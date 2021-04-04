@@ -17,8 +17,6 @@ public class ConnectionNub : MonoBehaviour {
         mouseHeldDown = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
         line = GetComponent<LineRenderer>();
-
-        Debug.Log(GetParentChatNode().gameObject.name);
     }
 
     // Update is called once per frame
@@ -60,7 +58,6 @@ public class ConnectionNub : MonoBehaviour {
     }
 
     private void OnMouseUp() {
-        Debug.Log("let go");
 
         mouseHeldDown = false;
 
