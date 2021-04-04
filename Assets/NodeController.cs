@@ -67,13 +67,15 @@ public class NodeController : MonoBehaviour {
         }
 
 
-        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");  
+        GameObject[] allChatNodesObjects = GameObject.FindGameObjectsWithTag("Node");
+        ChatNode[] allChatNodes = new ChatNode[allChatNodesObjects.Length];
+
+        //iterate over chatnode objects to find the head and get all ChatNode components
         ChatNode headNode = null;
-        foreach(GameObject chatNodeObj in allNodes) {
-            ChatNode chatNode = chatNodeObj.GetComponent<ChatNode>();
-            if (chatNode.GetID().Equals(headNodeID)) {
-                headNode = chatNode;
-                break;
+        for (int i = 0; i<allChatNodesObjects.Length; i++) {
+            allChatNodes[i] = allChatNodesObjects[i].GetComponent<ChatNode>();
+            if (allChatNodes[i].GetID().Equals(headNodeID)) {
+                headNode = allChatNodes[i];
             }
         }
 
@@ -86,7 +88,9 @@ public class NodeController : MonoBehaviour {
         ConversationData allData = new ConversationData();
         allData.AddNodeEntry(headNode.GetChatNodeData());
 
-        //TODO do this is a way that ensures all predecesors are before a given node in the order
+        //topologically sort all nodes in the scene
+        //TopologicalSortNodes(allChatNodes);
+
 
         Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
 
@@ -100,8 +104,9 @@ public class NodeController : MonoBehaviour {
      * Utilizes DFS to topologically sort all chatnodes, such that all predecessors of a given node appear before it in the order.
      * This is required due to the way the VSCS-II chat system build the chattree from the JSON; they must be ordered topologically before saving them to JSON.
      * ALG REF: https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
+     * Returns: Nothing; stores nodes in local variable sortedNodes. Cleaner signatures. 
      */
-    private ChatNode[] TopologicalSortNodes(ChatNode[] nodesToSort) {
+    private void TopologicalSortNodes(ChatNode[] nodesToSort) {
 
         //set up the marks, all false by default 
         temporaryMarks = new Dictionary<string, bool>();
@@ -121,7 +126,37 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-        throw new NotImplementedException();
+        //DEBUG PRINT
+        Debug.Log("PRINTING ORDERED LIST");
+        foreach (ChatNode sortedNode in sortedNodes) {
+            Debug.Log("ORDERED: " + sortedNode.GetID());
+        }
+    }
+
+
+    /*
+     * Support method. Resursively calls Visit() on direct descendants
+     */
+    private void VisitNode(ChatNode n) {
+
+        if (permanentMarks[n.GetID()])
+            return;
+        if (temporaryMarks[n.GetID()]) {
+            Debug.LogError("ERROR EXPORTING: A cycle in the graph was detected. Conversations must be directed acyclic graphs (DAGs).");
+            return;
+        }
+
+        temporaryMarks[n.GetID()] = true;
+
+        foreach(ChatNode m in n.GetDescendantNodes()) {
+            VisitNode(m);
+        }
+
+        temporaryMarks[n.GetID()] = false;
+        permanentMarks[n.GetID()] = true;
+
+        sortedNodes.Insert(0, n);
+
     }
 
     /*
@@ -134,15 +169,6 @@ public class NodeController : MonoBehaviour {
         }
 
         return true;
-    }
-
-    /*
-     * Support method. Resursively calls Visit() on direct descendants
-     */
-    private void VisitNode(ChatNode n) {
-
-        //if()
-
     }
 
     #endregion

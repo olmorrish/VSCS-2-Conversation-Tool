@@ -120,7 +120,14 @@ public class ChatNode : MonoBehaviour {
         //tell variant panel to populate
     }
 
-    public List<ChatNode> GetAllPreviousNodes() {
-        throw new NotImplementedException();
+    public ChatNode[] GetDescendantNodes() {
+        //descentants are connected via the variant panel; there are sometimes multiple outgoing nubs
+        if (currentVariantPanel == null) {
+             Debug.LogError("ERROR EXPORTING: Node \"" + GetID() + "\" does not have a nodetype selected; variant panel is not set and descendants cannot be obtained.");
+            return null;
+        }
+        else {
+            return currentVariantPanel.GetDescendantChatNodes();
+        }
     }
 }

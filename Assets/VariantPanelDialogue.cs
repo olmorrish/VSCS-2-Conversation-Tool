@@ -23,4 +23,11 @@ public class VariantPanelDialogue : VariantPanel {
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
         throw new System.NotImplementedException();
     }
+
+    public override ChatNode[] GetDescendantChatNodes() {
+
+        return new ChatNode[] { nextNub.connectedNub.GetParentChatNode() };
+
+    }
+
 }
