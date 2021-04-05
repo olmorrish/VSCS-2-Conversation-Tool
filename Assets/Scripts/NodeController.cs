@@ -66,7 +66,6 @@ public class NodeController : MonoBehaviour {
             return;
         }
 
-
         GameObject[] allChatNodesObjects = GameObject.FindGameObjectsWithTag("Node");
         ChatNode[] allChatNodes = new ChatNode[allChatNodesObjects.Length];
 
@@ -95,8 +94,8 @@ public class NodeController : MonoBehaviour {
         Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
 
         //TODO once data is collected, error check, ex: for duplicate node IDs
-        //TODO once data is collected, convert to a JSON file
 
+        //TODO once data is collected, convert to a JSON file and save it
     }
 
     #region Topological Sort Functions
@@ -121,14 +120,6 @@ public class NodeController : MonoBehaviour {
         sortedNodes = new List<ChatNode>();
 
         VisitNode(headNode);
-
-        //while (!AllNodesMarkedPermanent(nodesToSort)) {
-        //    foreach(ChatNode n in nodesToSort) {
-        //        if (permanentMarks[n.GetID()] == false) {
-        //            VisitNode(n);
-        //        }
-        //    }
-        //}
 
         //TODO: remove this debug print
         string s = "";

@@ -3006,10 +3006,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23aece568cd5e724f8b844cf181fe170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  variantPanelAddBCPFile: {fileID: 6088695766662802712, guid: e735f113f120cf34dace8c19aa865cb1,
+    type: 3}
+  variantPanelAddContact: {fileID: 3537018345054833079, guid: dacc50a2d2949cf4e80cbdfcdae4143c,
+    type: 3}
+  variantPanelAddFeedArticle: {fileID: 0}
+  variantPanelAddLogEntry: {fileID: 0}
+  variantPanelAudio: {fileID: 0}
+  variantPanelBranchOnPlayerInput: {fileID: 0}
   variantPanelBranchOnStoredBool: {fileID: 7408015644393334697, guid: 8bc12a6fa360b0e43a106ec8177e4fa4,
     type: 3}
+  variantPanelDelay: {fileID: 0}
   variantPanelDialogue: {fileID: 2855705599277495677, guid: 35457328a807d4a4b9de9b7662b38e47,
     type: 3}
+  variantPanelNewSpeaker: {fileID: 0}
+  variantPanelPlayerResponse: {fileID: 0}
+  variantPanelStoreBool: {fileID: 0}
   myCanvas: {fileID: 7537603173394672391}
   idInputField: {fileID: 7537603172546217317}
   nodetypeDropdown: {fileID: 7537603171702589362}

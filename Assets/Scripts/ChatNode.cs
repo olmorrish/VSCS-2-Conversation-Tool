@@ -22,8 +22,18 @@ public enum ChatNodeType {
 public class ChatNode : MonoBehaviour {
 
     [Header("Variant Panel Prefabs")]
-    public GameObject variantPanelBranchOnStoredBool;
-    public GameObject variantPanelDialogue;
+    public GameObject variantPanelAddBCPFile; //done
+    public GameObject variantPanelAddContact; //done
+    public GameObject variantPanelAddFeedArticle;
+    public GameObject variantPanelAddLogEntry;
+    public GameObject variantPanelAudio;
+    public GameObject variantPanelBranchOnPlayerInput;
+    public GameObject variantPanelBranchOnStoredBool; //done
+    public GameObject variantPanelDelay;
+    public GameObject variantPanelDialogue; //done
+    public GameObject variantPanelNewSpeaker;
+    public GameObject variantPanelPlayerResponse;
+    public GameObject variantPanelStoreBool;
 
     [Header("Internal References")]
     public GameObject myCanvas;
@@ -70,11 +80,41 @@ public class ChatNode : MonoBehaviour {
         Destroy(currentVariantPanelObject);
 
         switch (selected) {
+            case ChatNodeType.AddBCPFile:
+                currentVariantPanelObject = Instantiate(variantPanelAddBCPFile, myCanvas.transform);
+                break;
+            case ChatNodeType.AddContact:
+                currentVariantPanelObject = Instantiate(variantPanelAddContact, myCanvas.transform);
+                break;
+            case ChatNodeType.AddFeedArticle:
+                currentVariantPanelObject = Instantiate(variantPanelAddFeedArticle, myCanvas.transform);
+                break;
+            case ChatNodeType.AddLogEntry:
+                currentVariantPanelObject = Instantiate(variantPanelAddLogEntry, myCanvas.transform);
+                break;
+            case ChatNodeType.Audio:
+                currentVariantPanelObject = Instantiate(variantPanelAudio, myCanvas.transform);
+                break;
+            case ChatNodeType.BranchOnPlayerInput:
+                currentVariantPanelObject = Instantiate(variantPanelBranchOnPlayerInput, myCanvas.transform);
+                break;
             case ChatNodeType.BranchOnStoredBool:
                 currentVariantPanelObject = Instantiate(variantPanelBranchOnStoredBool, myCanvas.transform);
                 break;
+            case ChatNodeType.Delay:
+                currentVariantPanelObject = Instantiate(variantPanelDelay, myCanvas.transform);
+                break;
             case ChatNodeType.Dialogue:
                 currentVariantPanelObject = Instantiate(variantPanelDialogue, myCanvas.transform);
+                break;
+            case ChatNodeType.NewSpeaker:
+                currentVariantPanelObject = Instantiate(variantPanelNewSpeaker, myCanvas.transform);
+                break;
+            case ChatNodeType.PlayerResponse:
+                currentVariantPanelObject = Instantiate(variantPanelPlayerResponse, myCanvas.transform);
+                break;
+            case ChatNodeType.StoreBool:
+                currentVariantPanelObject = Instantiate(variantPanelStoreBool, myCanvas.transform);
                 break;
         }
 
