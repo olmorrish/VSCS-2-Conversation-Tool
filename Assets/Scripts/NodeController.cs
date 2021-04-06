@@ -19,16 +19,6 @@ public class NodeController : MonoBehaviour {
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
 
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
-
-    // Update is called once per frame
-    void Update() {
-        
-    }
-
     /*
      */
     public void SpawnNewChatNode() {
@@ -46,10 +36,15 @@ public class NodeController : MonoBehaviour {
         //copy the nodetype of the previous node; this doesn't copy over cleanly otherwise
         int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
         newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
+
+        //disconnect all nubs on the copy (one way); otherwise the connections persist
+        ConnectionNub[] allConnectionNubs = newChatNode.GetComponentsInChildren<ConnectionNub>();
+        foreach (ConnectionNub nub in allConnectionNubs)
+            nub.DisconnectThisNubOnly(); //leaves other end intact, only affects new nub
     }
 
     /*
-     * Starting at the marked head node, 
+     * Starting at the marked head node, called by export button.
      */
     public void RetrieveAndSaveAllNodeData() {
 
@@ -87,15 +82,27 @@ public class NodeController : MonoBehaviour {
         ConversationData allData = new ConversationData();
         allData.AddNodeEntry(headNode.GetChatNodeData());
 
-        //topologically sort all nodes in the scene
+        //topologically sort all nodes in the scene; this stores them in sortedNodes
         TopologicalSortNodes(allChatNodes, headNode);
-
 
         Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
 
-        //TODO once data is collected, error check, ex: for duplicate node IDs
+        //error check sorted nodes for duplicate IDs
+        List<string> allIDs = new List<string>();
+        foreach (ChatNode node in sortedNodes) {
+            string id = node.GetID();
+            if (allIDs.Contains(id)) {
+                Debug.LogWarning("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
+            }
+            else {
+                allIDs.Add(id);
+            }
+        }
 
-        //TODO once data is collected, convert to a JSON file and save it
+        //TODO convert to a JSON file
+
+        //write the JSON
+        string saveFilePath = Application.persistentDataPath + exportNameInputField.text + ".vscsconvo";
     }
 
     #region Topological Sort Functions

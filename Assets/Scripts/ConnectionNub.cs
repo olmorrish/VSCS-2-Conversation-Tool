@@ -31,7 +31,6 @@ public class ConnectionNub : MonoBehaviour {
             ResetLineRenderer();
         }
 
-
         if (mouseHeldDown) {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             line.SetPosition(0, transform.position);
@@ -49,11 +48,7 @@ public class ConnectionNub : MonoBehaviour {
             mouseHeldDown = true;
 
             //decouple nubs if one is clicked, and reset their line
-            if(connectedNub != null) {
-                connectedNub.connectedNub = null;
-                connectedNub.ResetLineRenderer();
-            }
-            connectedNub = null;
+            DisconnectNub();
         }
     }
 
@@ -76,19 +71,49 @@ public class ConnectionNub : MonoBehaviour {
             ResetLineRenderer(); //no nub
         }
         else {
-            //connect to the other nub
-            GameObject connectingTo = ray.collider.gameObject;
-            connectedNub = connectingTo.GetComponent<ConnectionNub>();
-            line.SetPosition(1, connectingTo.transform.position);
+            ConnectToNub(ray.collider.gameObject);
 
-            //make sure they are doubly linked
-            connectedNub.connectedNub = this;
+
         }
     }
 
+    /// <summary>
+    /// Connects to another nub. This breaks any connection that nub might have.
+    /// </summary>
+    public void ConnectToNub(GameObject connectingTo) {
+        connectedNub = connectingTo.GetComponent<ConnectionNub>();
+        line.SetPosition(1, connectingTo.transform.position);
+
+        //Disconnect other nub then doubly link to us
+        connectedNub.DisconnectNub();
+        connectedNub.connectedNub = this;
+    }
+
+    /// <summary>
+    /// Disconnects the nubs. Also tells other nub to reset.
+    /// </summary>
+    public void DisconnectNub() {
+        if (connectedNub != null) {
+            connectedNub.connectedNub = null;
+            connectedNub.ResetLineRenderer();
+        }
+        connectedNub = null;
+        ResetLineRenderer();
+    }
+
+    /// <summary>
+    /// Disconnects this nub only; this is required when this nub is on a copy of a node. Called on copyNode.
+    /// </summary>
+    public void DisconnectThisNubOnly() {
+        connectedNub = null;
+        ResetLineRenderer();
+    }
+
     public void ResetLineRenderer() {
-        line.SetPosition(0, transform.position);
-        line.SetPosition(1, transform.position);
+        if (line) {
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, transform.position);
+        }
     }
 
     /*
