@@ -19,6 +19,8 @@ public class NodeController : MonoBehaviour {
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
 
+    #region Button Fuctions
+
     /*
      */
     public void SpawnNewChatNode() {
@@ -104,6 +106,16 @@ public class NodeController : MonoBehaviour {
         //write the JSON
         string saveFilePath = Application.persistentDataPath + exportNameInputField.text + ".vscsconvo";
     }
+
+    public void LoadInConversationFile() {
+
+    }
+
+    public void QuitApplication() {
+        Application.Quit();
+    }
+
+    #endregion
 
     #region Topological Sort Functions
 

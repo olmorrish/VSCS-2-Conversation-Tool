@@ -136,6 +136,14 @@ public class ChatNode : MonoBehaviour {
         Destroy(this.gameObject);
     }
 
+    /// <summary>
+    /// Used when loading in the scene
+    /// </summary>
+    public void ConnectIncomingNub(ConnectionNub outGoingNubFromAnotherNode) {
+        //outGoingNubFromAnotherNode
+        throw new NotImplementedException();
+    }
+
     public Dictionary<string, string> GetChatNodeData() {
         Dictionary<string, string> data = new Dictionary<string, string>();
 
