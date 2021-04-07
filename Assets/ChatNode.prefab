@@ -3014,11 +3014,13 @@ MonoBehaviour:
     type: 3}
   variantPanelAddLogEntry: {fileID: 7330823247144894686, guid: 853737788ec91014daccb908a21a6d30,
     type: 3}
-  variantPanelAudio: {fileID: 0}
+  variantPanelAudio: {fileID: 689188908116507388, guid: fd6eaf5e0f1796b479952823a2c3dab0,
+    type: 3}
   variantPanelBranchOnPlayerInput: {fileID: 0}
   variantPanelBranchOnStoredBool: {fileID: 7408015644393334697, guid: 8bc12a6fa360b0e43a106ec8177e4fa4,
     type: 3}
-  variantPanelDelay: {fileID: 0}
+  variantPanelDelay: {fileID: 8636103450448240976, guid: dd88c44c962ba3249ace3e62b28fbc90,
+    type: 3}
   variantPanelDialogue: {fileID: 2855705599277495677, guid: 35457328a807d4a4b9de9b7662b38e47,
     type: 3}
   variantPanelNewSpeaker: {fileID: 0}

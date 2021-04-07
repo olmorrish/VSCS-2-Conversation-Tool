@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VariantPanelDialogue : VariantPanel {
+public class VariantPanelDelay : VariantPanel {
 
-    [Header("Internal References")]
-    public TMPro.TMP_InputField speakerInputField;
-    public TMPro.TMP_InputField dialogueInputField;
+    public TMPro.TMP_InputField delayAmountInputField;
     public ConnectionNub nextNub;
 
     public override Dictionary<string, string> GetVariantPanelData() {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
-        ret.Add("speaker", speakerInputField.text);
-        ret.Add("dialogue", dialogueInputField.text);   //TODO post processing on the dialogue for quotes and segments and such, can be done when serializing to JSON
+        ret.Add("delaylength", delayAmountInputField.text);
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
         ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
@@ -27,13 +24,11 @@ public class VariantPanelDialogue : VariantPanel {
 
     public override List<ChatNode> GetDescendantChatNodes() {
 
-        if(nextNub.connectedNub == null) {
+        if (nextNub.connectedNub == null) {
             return new List<ChatNode> { }; //no connection => no descendants
         }
         else {
             return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
         }
-
     }
-
 }
