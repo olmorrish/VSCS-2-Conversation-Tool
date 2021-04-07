@@ -3010,8 +3010,10 @@ MonoBehaviour:
     type: 3}
   variantPanelAddContact: {fileID: 3537018345054833079, guid: dacc50a2d2949cf4e80cbdfcdae4143c,
     type: 3}
-  variantPanelAddFeedArticle: {fileID: 0}
-  variantPanelAddLogEntry: {fileID: 0}
+  variantPanelAddFeedArticle: {fileID: 1355954759910540218, guid: 2734a2daadf87d1419c643bbc7d3a4a9,
+    type: 3}
+  variantPanelAddLogEntry: {fileID: 7330823247144894686, guid: 853737788ec91014daccb908a21a6d30,
+    type: 3}
   variantPanelAudio: {fileID: 0}
   variantPanelBranchOnPlayerInput: {fileID: 0}
   variantPanelBranchOnStoredBool: {fileID: 7408015644393334697, guid: 8bc12a6fa360b0e43a106ec8177e4fa4,
