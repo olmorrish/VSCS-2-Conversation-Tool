@@ -3023,7 +3023,8 @@ MonoBehaviour:
     type: 3}
   variantPanelDialogue: {fileID: 2855705599277495677, guid: 35457328a807d4a4b9de9b7662b38e47,
     type: 3}
-  variantPanelNewSpeaker: {fileID: 0}
+  variantPanelNewSpeaker: {fileID: 3421180602565192466, guid: 8622987aa76e1d749ba418d007140a03,
+    type: 3}
   variantPanelPlayerResponse: {fileID: 0}
   variantPanelStoreBool: {fileID: 0}
   myCanvas: {fileID: 7537603173394672391}
