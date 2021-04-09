@@ -3026,7 +3026,8 @@ MonoBehaviour:
   variantPanelNewSpeaker: {fileID: 3421180602565192466, guid: 8622987aa76e1d749ba418d007140a03,
     type: 3}
   variantPanelPlayerResponse: {fileID: 0}
-  variantPanelStoreBool: {fileID: 0}
+  variantPanelStoreBool: {fileID: 1426245904100033553, guid: 6577bf81b566c2545a2d46311796cdb5,
+    type: 3}
   myCanvas: {fileID: 7537603173394672391}
   idInputField: {fileID: 7537603172546217317}
   nodetypeDropdown: {fileID: 7537603171702589362}
