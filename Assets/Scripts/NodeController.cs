@@ -92,7 +92,7 @@ public class NodeController : MonoBehaviour {
         //topologically sort all nodes in the scene; this stores them in sortedNodes
         TopologicalSortNodes(allChatNodes, headNode);
 
-        Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
+        //Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
 
         //error check sorted nodes for duplicate IDs
         List<string> allIDs = new List<string>();
@@ -107,7 +107,6 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-
         //get a dictionary of entries for each node
         List<Dictionary<string, string>> nodeEntries = new List<Dictionary<string, string>>();
         foreach(ChatNode node in sortedNodes) {
@@ -119,14 +118,41 @@ public class NodeController : MonoBehaviour {
 
         foreach(Dictionary<string, string> nodeEntry in nodeEntries) {
 
+            //position is saved in dictionary; save as we go
+            Vector2 positionToJSONArray = new Vector2();
+
             //turn each ChatNode into a JSON obj...
-            JSONObject singleNode = new JSONObject();
+            JSONObject singleNodeJSONObj = new JSONObject();
             foreach (KeyValuePair<string, string> pair in nodeEntry) {
-                singleNode.Add(pair.Key, pair.Value);
+
+                //some fields require array post processing
+                if (pair.Key == "posx") { positionToJSONArray.x = float.Parse(pair.Value); }
+                else if (pair.Key == "posy") { positionToJSONArray.y = float.Parse(pair.Value); }
+
+                else if (pair.Key == "contents") {
+                    string rawDialogue = pair.Value;
+                    string[] splitDialogue = rawDialogue.Split(new string[] { "\n\n" }, StringSplitOptions.None);
+
+                    JSONArray allDialogueArray = new JSONArray();
+                    foreach(string lineOfDialogue in splitDialogue)
+                        allDialogueArray.Add(lineOfDialogue);
+
+                    singleNodeJSONObj.Add("contents", allDialogueArray);
+                }
+
+                else {
+                    singleNodeJSONObj.Add(pair.Key, pair.Value); //used for most fields if not array'ed
+                }
             }
 
-            //... then add it to the array
-            allNodes.Add(singleNode);
+            //...store coordinates of the node as array (we stored them as we looped through)...
+            JSONArray position = new JSONArray();
+            position.Add(positionToJSONArray.x);
+            position.Add(positionToJSONArray.y);
+            singleNodeJSONObj.Add("nodeposition", position);
+
+            //... then add it to the full node array
+            allNodes.Add(singleNodeJSONObj);
         }
 
         Debug.Log(allNodes.ToString());

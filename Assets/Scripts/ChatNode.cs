@@ -150,6 +150,9 @@ public class ChatNode : MonoBehaviour {
         data.Add("id", idInputField.text);
         data.Add("nodetype", selectedType.ToString());
 
+        data.Add("posx", transform.position.x.ToString());
+        data.Add("posy", transform.position.y.ToString());
+
         //add all the data that the Variant Panel gives, give warning if there isn't one
         if(currentVariantPanel == null) {
             Debug.LogError("ERROR EXPORTING: A node in the graph does not have a variant panel specified: ID of node is: \"" + GetID() + "\".");
