@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 using System;
+using System.IO;
 
 public class NodeController : MonoBehaviour {
 
@@ -48,7 +49,7 @@ public class NodeController : MonoBehaviour {
     /*
      * Starting at the marked head node, called by export button.
      */
-    public void RetrieveAndSaveAllNodeData() {
+    public void Export() {
 
         //find the head node
         string headNodeID = headIDInputField.text;
@@ -101,14 +102,37 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-        //TODO convert to a JSON file
+
+        //get a dictionary of entries for each node
+        List<Dictionary<string, string>> nodeEntries = new List<Dictionary<string, string>>();
+        foreach(ChatNode node in sortedNodes) {
+            nodeEntries.Add(node.GetChatNodeData());
+        }
+
+        //convert dictionaries to a JSON array
+        JSONArray allNodes = new JSONArray();
+
+        foreach(Dictionary<string, string> nodeEntry in nodeEntries) {
+
+            //turn each ChatNode into a JSON obj...
+            JSONObject singleNode = new JSONObject();
+            foreach (KeyValuePair<string, string> pair in nodeEntry) {
+                singleNode.Add(pair.Key, pair.Value);
+            }
+
+            //... then add it to the array
+            allNodes.Add(singleNode);
+        }
+
+        Debug.Log(allNodes.ToString());
 
         //write the JSON
-        string saveFilePath = Application.persistentDataPath + exportNameInputField.text + ".vscsconvo";
+        string saveFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+        File.WriteAllText(saveFilePath, allNodes.ToString());
     }
 
-    public void LoadInConversationFile() {
-
+    public void Import() {
+        throw new NotImplementedException();
     }
 
     public void QuitApplication() {
