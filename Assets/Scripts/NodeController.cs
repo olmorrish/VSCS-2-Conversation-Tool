@@ -8,7 +8,7 @@ using System.IO;
 public class NodeController : MonoBehaviour {
 
     [Header("References")]
-    public GameObject ChatNodePrefab;
+    public GameObject chatNodePrefab;
     public TMPro.TMP_InputField headIDInputField;
     public TMPro.TMP_InputField exportNameInputField;
     public OutputText outputText;
@@ -26,7 +26,7 @@ public class NodeController : MonoBehaviour {
     /*
      */
     public void SpawnNewChatNode() {
-        GameObject newChatNode = Instantiate(ChatNodePrefab, this.transform);
+        GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
     }
 
@@ -47,9 +47,9 @@ public class NodeController : MonoBehaviour {
             nub.DisconnectThisNubOnly(); //leaves other end intact, only affects new nub
     }
 
-    /*
-     * Starting at the marked head node, called by export button.
-     */
+    /// <summary>
+    /// Export all nodes to JSON.
+    /// </summary>
     public void Export() {
 
         //find the head node
@@ -164,15 +164,63 @@ public class NodeController : MonoBehaviour {
         outputText.AddLine("SUCCESS! Exported file as \"" + exportNameInputField.text + ".json\" (in AppData).");
     }
 
+    /// <summary>
+    /// Imports a file, given the entered file name.
+    /// </summary>
     public void Import() {
 
         if (exportNameInputField.text.Equals("")) {
-            outputText.AddLine("ERROR EXPORTING: No import name was specified.");
-            Debug.LogWarning("ERROR EXPORTING: No import name was specified.");
+            outputText.AddLine("ERROR IMPORTING: No import name was specified.");
+            Debug.LogWarning("ERROR IMPORTING: No import name was specified.");
             return;
         }
 
-        string saveFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+        string loadFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+
+        if (!File.Exists(loadFilePath)) {
+            outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + exportNameInputField.text + ".json \"");
+            Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + exportNameInputField.text + ".json \"");
+            return;
+        }
+
+        JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
+
+
+        //iterate over all the chatnode data and spwawn them in
+        int i = 0;
+        while (loadedChatNodes[i] != null) {
+
+            //get object and spawn a blank chatnode
+            JSONObject chatNodeJSONData = (JSONObject) loadedChatNodes[i];
+            GameObject newChatNodeObject = Instantiate(chatNodePrefab);
+
+            //obtain and then set the position
+            JSONArray nodePosition = (JSONArray) chatNodeJSONData["nodeposition"];
+            float xPos = nodePosition[0];
+            float yPos = nodePosition[1];
+            newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
+
+            //add all the fields in the json to a dictionary
+            Dictionary<string, string> nodeDataAsDictionary = new Dictionary<string, string>();
+            nodeDataAsDictionary.Add("id", chatNodeJSONData["id"]);
+            nodeDataAsDictionary.Add("nodetype", chatNodeJSONData["nodetype"]);
+
+            int j = 0;
+            while(chatNodeJSONData[j] != null) {
+
+                //TODO iterate over other fields, be sure to skip id, nodetype, and nodeposition!
+                j++;
+            }
+
+            //pass the JSON data to the node so it can populate itself
+            newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
+
+            //TODO iterate over node data again and make nub connections based on "nexts"
+
+            i++;
+        }
+
+
 
         throw new NotImplementedException();
     }

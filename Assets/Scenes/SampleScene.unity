@@ -3873,7 +3873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8092929cbf28c4b93706158da91dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChatNodePrefab: {fileID: 7537603173291769588, guid: 1b613913c97b0b24cb6349f56b3bc922,
+  chatNodePrefab: {fileID: 7537603173291769588, guid: 1b613913c97b0b24cb6349f56b3bc922,
     type: 3}
   headIDInputField: {fileID: 1277264788}
   exportNameInputField: {fileID: 1620533146}

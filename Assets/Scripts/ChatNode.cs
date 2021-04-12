@@ -169,10 +169,41 @@ public class ChatNode : MonoBehaviour {
     }
 
     public void PopulateChatNodeData(Dictionary<string, string> data) {
-        throw new NotImplementedException();
+
+        Debug.Log("Attempting to populate a chatnode.");
+
+        foreach(KeyValuePair<string, string> pair in data) {
+
+            switch (pair.Key) {
+                case "id":
+                    Debug.Log("Trying to set ID...");
+                    idInputField.text = pair.Value.ToString();
+                    break;
+                case "nodetype":
+                    //get all options as strings, find the index matching the nodetype value, then set that index
+                    List<TMPro.TMP_Dropdown.OptionData> menuOptions = nodetypeDropdown.GetComponent<TMPro.TMP_Dropdown>().options;
+                    List<string> menuOptionsAsStrings = new List<string>();
+                    foreach (TMPro.TMP_Dropdown.OptionData optionData in menuOptions) {
+                        menuOptionsAsStrings.Add(optionData.text);
+                    }
+                    nodetypeDropdown.value = menuOptionsAsStrings.IndexOf(pair.Value);
+
+                    //TODO spawn in the variantpanel
+
+                    break;
+            }
+
+
+        }
+
+        //throw new NotImplementedException();
+        
         //populate id and nodetype
+        //set
         //spawn variant panel
         //tell variant panel to populate
+
+        //don't handle nub connections here; we have to spawn all desendants first
     }
 
     public List<ChatNode> GetDescendantNodes() {
