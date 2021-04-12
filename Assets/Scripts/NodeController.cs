@@ -169,6 +169,8 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void Import() {
 
+        ClearScreen();
+
         if (exportNameInputField.text.Equals("")) {
             outputText.AddLine("ERROR IMPORTING: No import name was specified.");
             Debug.LogWarning("ERROR IMPORTING: No import name was specified.");
@@ -199,18 +201,27 @@ public class NodeController : MonoBehaviour {
             float xPos = nodePosition[0];
             float yPos = nodePosition[1];
             newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
-
-            //add all the fields in the json to a dictionary
+            
+            //add all the fields in the json to a dictionary by iterating over the keys
             Dictionary<string, string> nodeDataAsDictionary = new Dictionary<string, string>();
-            nodeDataAsDictionary.Add("id", chatNodeJSONData["id"]);
-            nodeDataAsDictionary.Add("nodetype", chatNodeJSONData["nodetype"]);
-
-            int j = 0;
-            while(chatNodeJSONData[j] != null) {
-
-                //TODO iterate over other fields, be sure to skip id, nodetype, and nodeposition!
-                j++;
+            JSONNode.KeyEnumerator keys = chatNodeJSONData.Keys;
+            foreach(string key in keys) {
+                if (key.Equals("contents")) {
+                    //TODO post-processing for contents; connect with \n\n's
+                }
+                else if (key.Equals("nodeposition")) {
+                    //do nothing, we already applied this data to the transform and don't need to pass it to the node
+                }
+                else {
+                    nodeDataAsDictionary.Add(key, chatNodeJSONData[key]); //no post-processing needed
+                }
             }
+
+
+                //TODO iterate over other fields and add them to the dictionary, be sure to skip id, nodetype, and nodeposition (maybe? we remove it below?)
+                //TODO iterate over the dialogue array and connect with \n\n's
+
+            nodeDataAsDictionary.Remove("nodeposition"); //we don't need position anymore, already applied it
 
             //pass the JSON data to the node so it can populate itself
             newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
@@ -223,6 +234,12 @@ public class NodeController : MonoBehaviour {
 
 
         throw new NotImplementedException();
+    }
+
+    private void ClearScreen() {
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
+        foreach (GameObject node in allNodes)
+            Destroy(node);
     }
 
     public void QuitApplication() {
@@ -253,13 +270,6 @@ public class NodeController : MonoBehaviour {
         sortedNodes = new List<ChatNode>();
 
         VisitNode(headNode);
-
-        //TODO: remove this debug print
-        //string s = "";
-        //foreach (ChatNode sortedNode in sortedNodes) {
-        //    s += sortedNode.GetID() + " ,";
-        //}
-        //Debug.Log("TOP. ORDERED NODES: " + s);
     }
 
 
