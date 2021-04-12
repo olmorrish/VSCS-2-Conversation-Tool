@@ -11,6 +11,7 @@ public class NodeController : MonoBehaviour {
     public GameObject ChatNodePrefab;
     public TMPro.TMP_InputField headIDInputField;
     public TMPro.TMP_InputField exportNameInputField;
+    public OutputText outputText;
 
     //[Header("Data")]
     private string headNodeID;
@@ -56,10 +57,12 @@ public class NodeController : MonoBehaviour {
         string exportName = exportNameInputField.text;
 
         if (headNodeID.Equals("")) {
+            outputText.AddLine("ERROR EXPORTING: No head node ID was specified.");
             Debug.LogWarning("ERROR EXPORTING: No head node ID was specified.");
             return;
         }
         else if (exportName.Equals("")) {
+            outputText.AddLine("ERROR EXPORTING: No export name was specified.");
             Debug.LogWarning("ERROR EXPORTING: No export name was specified.");
             return;
         }
@@ -77,6 +80,7 @@ public class NodeController : MonoBehaviour {
         }
 
         if(headNode == null) {
+            outputText.AddLine("ERROR EXPORTING: Head node with ID \"" + headNodeID + "\" could not be found.");
             Debug.LogWarning("ERROR EXPORTING: Head node with ID \"" + headNodeID + "\" could not be found.");
             return;
         }
@@ -95,6 +99,7 @@ public class NodeController : MonoBehaviour {
         foreach (ChatNode node in sortedNodes) {
             string id = node.GetID();
             if (allIDs.Contains(id)) {
+                outputText.AddLine("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
                 Debug.LogWarning("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
             }
             else {
@@ -129,9 +134,20 @@ public class NodeController : MonoBehaviour {
         //write the JSON
         string saveFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
         File.WriteAllText(saveFilePath, allNodes.ToString());
+
+        outputText.AddLine("SUCCESS! Exported file as \"" + exportNameInputField.text + ".json\" (in AppData).");
     }
 
     public void Import() {
+
+        if (exportNameInputField.text.Equals("")) {
+            outputText.AddLine("ERROR EXPORTING: No import name was specified.");
+            Debug.LogWarning("ERROR EXPORTING: No import name was specified.");
+            return;
+        }
+
+        string saveFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+
         throw new NotImplementedException();
     }
 
@@ -165,11 +181,11 @@ public class NodeController : MonoBehaviour {
         VisitNode(headNode);
 
         //TODO: remove this debug print
-        string s = "";
-        foreach (ChatNode sortedNode in sortedNodes) {
-            s += sortedNode.GetID() + " ,";
-        }
-        Debug.Log("TOP. ORDERED NODES: " + s);
+        //string s = "";
+        //foreach (ChatNode sortedNode in sortedNodes) {
+        //    s += sortedNode.GetID() + " ,";
+        //}
+        //Debug.Log("TOP. ORDERED NODES: " + s);
     }
 
 
@@ -181,6 +197,7 @@ public class NodeController : MonoBehaviour {
         if (permanentMarks[n.GetID()])
             return;
         if (temporaryMarks[n.GetID()]) {
+            outputText.AddLine("ERROR EXPORTING: A cycle in the graph was detected. Conversations must be directed acyclic graphs (DAGs).");
             Debug.LogError("ERROR EXPORTING: A cycle in the graph was detected. Conversations must be directed acyclic graphs (DAGs).");
             return;
         }
