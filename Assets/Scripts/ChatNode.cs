@@ -139,17 +139,24 @@ public class ChatNode : MonoBehaviour {
         currentVariantPanel = currentVariantPanelObject.GetComponent<VariantPanel>();
     }
 
-    /*
-     * Used by other nodes to get ID for connections
-     */
+    /// <summary>
+    /// Gets the ID of the node. Used by other nodes to get ID for nub connections during serialization.
+    /// </summary>
+    /// <returns>ID of this node.</returns>
     public string GetID() {
         return idInputField.text;
     }
 
+    /// <summary>
+    /// Called by click of Copy button. Sends self over to NodeController, so that a new node can copy data from this one.
+    /// </summary>
     public void DuplicateNode() {
         GameObject.Find("NodeController").GetComponent<NodeController>().SpawnNewChatNodeFromCopy(this.gameObject);
     }
 
+    /// <summary>
+    /// Destroys this node. Nub connections handle this situation themselves.
+    /// </summary>
     public void DeleteNode() {
         Destroy(this.gameObject);
     }
@@ -159,9 +166,15 @@ public class ChatNode : MonoBehaviour {
     /// </summary>
     public void ConnectIncomingNub(ConnectionNub outGoingNubFromAnotherNode) {
         //outGoingNubFromAnotherNode
+        //TODO
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Packages up data from self (ID, NodeType, Position) and current VariantPanel into a dictionary.
+    /// This is used for serialization or getting data to create a copy of this node.
+    /// </summary>
+    /// <returns>all data pertinent to this ChatNode.</returns>
     public Dictionary<string, string> GetChatNodeData() {
         Dictionary<string, string> data = new Dictionary<string, string>();
 
@@ -181,11 +194,14 @@ public class ChatNode : MonoBehaviour {
             }
         }
 
-        //TODO Apply post-processing to some fields
-
         return data;
     }
 
+    /// <summary>
+    /// The inverse of GetChatNodeData(); iterates over provided dictionary to find data to populate self and current VariantPanel.
+    /// Called when deserializing while importing, and when this node is a copy of another and needs data from another node to populate.
+    /// </summary>
+    /// <param name="data"></param>
     public void PopulateChatNodeData(Dictionary<string, string> data) {
 
         //set the id
@@ -208,6 +224,10 @@ public class ChatNode : MonoBehaviour {
         //don't handle nub connections here; we have to spawn all desendants first
     }
 
+    /// <summary>
+    /// Gets the descendants of this ChatNode by querying the current VariantPanel.
+    /// </summary>
+    /// <returns>A list of descendant ChatNodes.</returns>
     public List<ChatNode> GetDescendantNodes() {
         //descentants are connected via the variant panel; there are sometimes multiple outgoing nubs
         if (currentVariantPanel == null) {

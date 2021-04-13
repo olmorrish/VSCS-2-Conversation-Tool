@@ -23,15 +23,18 @@ public class NodeController : MonoBehaviour {
 
     #region Button Fuctions
 
-    /*
-     */
+    /// <summary>
+    /// Spawn a new blank ChatNode in the center of the view.
+    /// </summary>
     public void SpawnNewChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
     }
 
-    /* Copy spawner, called by chatnodes
-     */
+    /// <summary>
+    /// Copy spawner, called by copy button on ChatNode. Tells new ChatnNode to copy the passed one.
+    /// </summary>
+    /// <param name="toCopy">The GameObject of the ChatNode to copy. Param is calling object.</param>
     public void SpawnNewChatNodeFromCopy(GameObject toCopy) {
 
         GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
@@ -39,24 +42,6 @@ public class NodeController : MonoBehaviour {
 
         ChatNode newChatNode = newChatNodeObject.GetComponent<ChatNode>();
         newChatNode.CopyOtherNodeData(toCopy.GetComponent<ChatNode>());
-
-        //GameObject newChatNodeObj = Instantiate(toCopy, this.transform);
-        //ChatNode newChatNode = newChatNodeObj.GetComponent<ChatNode>();
-        //newChatNodeObj.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
-
-        ////copy the nodetype of the previous node; this doesn't copy over cleanly otherwise
-        //TMPro.TMP_Dropdown dropdown = newChatNode.nodetypeDropdown;
-        //string text = dropdown.options[dropdown.value].text;
-        //ChatNodeType typeToSelect = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
-        //newChatNode.ManuallySelectNodeType(typeToSelect);
-
-        ////int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
-        ////newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
-
-        ////disconnect all nubs on the copy (one way); otherwise the connections persist
-        //ConnectionNub[] allConnectionNubs = newChatNodeObj.GetComponentsInChildren<ConnectionNub>();
-        //foreach (ConnectionNub nub in allConnectionNubs)
-        //    nub.DisconnectThisNubOnly(); //leaves other end intact, only affects new nub
     }
 
     /// <summary>
@@ -177,7 +162,7 @@ public class NodeController : MonoBehaviour {
     }
 
     /// <summary>
-    /// Imports a file, given the entered file name.
+    /// Imports a file, given the entered file name. This clears the scene then populates it with the saved ChatNodes.
     /// </summary>
     public void Import() {
 
@@ -229,9 +214,6 @@ public class NodeController : MonoBehaviour {
                 }
             }
 
-
-            //TODO iterate over the dialogue array and connect with \n\n's
-
             nodeDataAsDictionary.Remove("nodeposition"); //we don't need position anymore, already applied it
 
             //pass the JSON data to the node so it can populate itself
@@ -243,12 +225,18 @@ public class NodeController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Deletes all ChatNodes in the scene. Called before importing a file.
+    /// </summary>
     private void ClearScreen() {
         GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
         foreach (GameObject node in allNodes)
             Destroy(node);
     }
 
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
     public void QuitApplication() {
         Application.Quit();
     }
@@ -279,10 +267,10 @@ public class NodeController : MonoBehaviour {
         VisitNode(headNode);
     }
 
-
-    /*
-     * Support method. Resursively calls Visit() on direct descendants
-     */
+    /// <summary>
+    /// Support method. Resursively calls Visit() on direct descendants
+    /// </summary>
+    /// <param name="n">The node to visit.</param>
     private void VisitNode(ChatNode n) {
 
         if (permanentMarks[n.GetID()])
@@ -306,9 +294,11 @@ public class NodeController : MonoBehaviour {
 
     }
 
-    /*
-     * Support method. Returns false if any node is not marked permanently, true if all are marked.
-     */
+    /// <summary>
+    /// Support method. Returns false if any node is not marked permanently, true if all are marked.
+    /// </summary>
+    /// <param name="nodes">A list of all nodes to check.</param>
+    /// <returns>True if all nodes have been permanently marked.</returns>
     private bool AllNodesMarkedPermanent(ChatNode[] nodes) {
         foreach (ChatNode node in nodes) {
             if (permanentMarks[node.GetID()] == false)

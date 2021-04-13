@@ -31,15 +31,20 @@ public class ConnectionNub : MonoBehaviour {
             ResetLineRenderer();
         }
 
+        //always draw a line from the clicked node to the mouse, while M0 is held down
         if (mouseHeldDown) {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, mousePos);
         }
 
+        //nubs change colour to indicate connection
         spriteRenderer.color = connectedNub == null ? Color.white : Color.cyan;
     }
 
+    /// <summary>
+    /// Called on mouse 0 down; tracks click and drag.
+    /// </summary>
     private void OnMouseDown() {
         if (Input.GetMouseButtonDown(0)) {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -52,6 +57,9 @@ public class ConnectionNub : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Called on mosue 1 up; releasing over another nub creates a connection, otherwise the connection is intentionally broken.
+    /// </summary>
     private void OnMouseUp() {
 
         mouseHeldDown = false;
@@ -116,9 +124,10 @@ public class ConnectionNub : MonoBehaviour {
         }
     }
 
-    /*
-     * Recursively goes up the chain until the ChatNode this nub is attached to is found
-     */
+    /// <summary>
+    /// Recursively goes up the chain until the ChatNode this nub is attached to is found
+    /// </summary>
+    /// <returns></returns>
     public ChatNode GetParentChatNode() {
 
         GameObject obj = this.gameObject;
