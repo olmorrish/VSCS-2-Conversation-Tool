@@ -62,10 +62,28 @@ public class ChatNode : MonoBehaviour {
 
     }
 
-    public void ManuallySelectNodeType(ChatNodeType typeToSet) {
-        selectedType = typeToSet;
-        //SpawnVariantPanel(selectedType); from a copy; don't need to set variant panel
+    /// <summary>
+    /// Copies over all data from another node, used when duplicating a node. Nub connections are not carried over.
+    /// </summary>
+    /// <param name="otherNode"></param>
+    public void CopyOtherNodeData(ChatNode otherNode) {
+
+        //header properties
+        idInputField.text = otherNode.idInputField.text + "c";
+        nodetypeDropdown.value = otherNode.nodetypeDropdown.value;
+        selectedType = otherNode.selectedType;
+
+        NodeTypeSelected(nodetypeDropdown);
+
+        //package up the variant panel data and populate self using it
+        Dictionary<string, string> otherNodeVariantData = otherNode.GetChatNodeData();
+        currentVariantPanel.PopulateVariantPanelData(otherNodeVariantData);
     }
+
+    //public void ManuallySelectNodeType(ChatNodeType typeToSet) {
+    //    selectedType = typeToSet;
+    //    //SpawnVariantPanel(selectedType); from a copy; don't need to set variant panel
+    //}
 
     void NodeTypeSelected(TMPro.TMP_Dropdown dropdown) {
         string text = dropdown.options[dropdown.value].text;
@@ -129,7 +147,7 @@ public class ChatNode : MonoBehaviour {
     }
 
     public void DuplicateNode() {
-        GameObject.Find("NodeController").GetComponent<NodeController>().SpawnNewChatNode(this.gameObject);
+        GameObject.Find("NodeController").GetComponent<NodeController>().SpawnNewChatNodeFromCopy(this.gameObject);
     }
 
     public void DeleteNode() {

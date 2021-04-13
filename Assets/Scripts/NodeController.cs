@@ -32,25 +32,31 @@ public class NodeController : MonoBehaviour {
 
     /* Copy spawner, called by chatnodes
      */
-    public void SpawnNewChatNode(GameObject toCopy) {
+    public void SpawnNewChatNodeFromCopy(GameObject toCopy) {
 
-        GameObject newChatNodeObj = Instantiate(toCopy, this.transform);
-        ChatNode newChatNode = newChatNodeObj.GetComponent<ChatNode>();
-        newChatNodeObj.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
+        newChatNodeObject.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
 
-        //copy the nodetype of the previous node; this doesn't copy over cleanly otherwise
-        TMPro.TMP_Dropdown dropdown = newChatNode.nodetypeDropdown;
-        string text = dropdown.options[dropdown.value].text;
-        ChatNodeType typeToSelect = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
-        newChatNode.ManuallySelectNodeType(typeToSelect);
+        ChatNode newChatNode = newChatNodeObject.GetComponent<ChatNode>();
+        newChatNode.CopyOtherNodeData(toCopy.GetComponent<ChatNode>());
 
-        //int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
-        //newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
+        //GameObject newChatNodeObj = Instantiate(toCopy, this.transform);
+        //ChatNode newChatNode = newChatNodeObj.GetComponent<ChatNode>();
+        //newChatNodeObj.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
 
-        //disconnect all nubs on the copy (one way); otherwise the connections persist
-        ConnectionNub[] allConnectionNubs = newChatNodeObj.GetComponentsInChildren<ConnectionNub>();
-        foreach (ConnectionNub nub in allConnectionNubs)
-            nub.DisconnectThisNubOnly(); //leaves other end intact, only affects new nub
+        ////copy the nodetype of the previous node; this doesn't copy over cleanly otherwise
+        //TMPro.TMP_Dropdown dropdown = newChatNode.nodetypeDropdown;
+        //string text = dropdown.options[dropdown.value].text;
+        //ChatNodeType typeToSelect = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
+        //newChatNode.ManuallySelectNodeType(typeToSelect);
+
+        ////int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
+        ////newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
+
+        ////disconnect all nubs on the copy (one way); otherwise the connections persist
+        //ConnectionNub[] allConnectionNubs = newChatNodeObj.GetComponentsInChildren<ConnectionNub>();
+        //foreach (ConnectionNub nub in allConnectionNubs)
+        //    nub.DisconnectThisNubOnly(); //leaves other end intact, only affects new nub
     }
 
     /// <summary>
