@@ -39,6 +39,7 @@ public class ChatNode : MonoBehaviour {
     public GameObject myCanvas;
     public TMPro.TMP_InputField idInputField;
     public TMPro.TMP_Dropdown nodetypeDropdown;
+    public ConnectionNub[] incomingNubs; 
 
     [Header("State")]
     public GameObject currentVariantPanelObject;
@@ -59,7 +60,6 @@ public class ChatNode : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         nodetypeDropdown.onValueChanged.AddListener(delegate { NodeTypeSelected(nodetypeDropdown); });
-
     }
 
     /// <summary>
@@ -79,11 +79,6 @@ public class ChatNode : MonoBehaviour {
         Dictionary<string, string> otherNodeVariantData = otherNode.GetChatNodeData();
         currentVariantPanel.PopulateVariantPanelData(otherNodeVariantData);
     }
-
-    //public void ManuallySelectNodeType(ChatNodeType typeToSet) {
-    //    selectedType = typeToSet;
-    //    //SpawnVariantPanel(selectedType); from a copy; don't need to set variant panel
-    //}
 
     void NodeTypeSelected(TMPro.TMP_Dropdown dropdown) {
         string text = dropdown.options[dropdown.value].text;
@@ -164,10 +159,34 @@ public class ChatNode : MonoBehaviour {
     /// <summary>
     /// Used when loading in the scene
     /// </summary>
-    public void ConnectIncomingNub(ConnectionNub outGoingNubFromAnotherNode) {
-        //outGoingNubFromAnotherNode
-        //TODO
-        throw new NotImplementedException();
+    public void ConnectIncomingNub(ConnectionNub incomingNubToConnect) {
+
+        ConnectionNub myNubToConnect = GetNextFreeIncomingNub();
+
+        if (myNubToConnect == null) {
+            Debug.LogError("ERROR IMPORTING: ChatNode " + GetID() + " doesn't have enough free incoming nubs to deserialize the file properly.");
+        }
+        else {
+            incomingNubToConnect.ConnectToNub(myNubToConnect.gameObject); //connect the two
+        }
+    }
+
+    /// <summary>
+    /// Get a free incoming connection nub. Returns null if none exist, meaning something went wrong with serialization.
+    /// </summary>
+    /// <returns>Free connectionNub, null if there are none.</returns>
+    private ConnectionNub GetNextFreeIncomingNub() {
+
+        ConnectionNub freeNub = null;
+
+        foreach (ConnectionNub incomingNub in incomingNubs) {
+            if(incomingNub.connectedNub == null) {
+                freeNub = incomingNub;
+                break;
+            }
+        }
+
+        return freeNub;
     }
 
     /// <summary>
@@ -222,6 +241,14 @@ public class ChatNode : MonoBehaviour {
         currentVariantPanel.PopulateVariantPanelData(data);
 
         //don't handle nub connections here; we have to spawn all desendants first
+    }
+
+    /// <summary>
+    /// Gets all outgoing nubs, which can then be connected to other nodes. These are gathered when making connections on import.
+    /// </summary>
+    /// <returns>All outgoing nubs, 1-3 depending on the VariantPanel type.</returns>
+    public List<ConnectionNub> GetOutgoingNubs() {
+        return currentVariantPanel.GetNubs();
     }
 
     /// <summary>

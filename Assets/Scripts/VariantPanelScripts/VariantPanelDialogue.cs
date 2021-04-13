@@ -45,4 +45,7 @@ public class VariantPanelDialogue : VariantPanel {
 
     }
 
+    public override List<ConnectionNub> GetNubs() {
+        return new List<ConnectionNub>() { nextNub };
+    }
 }

@@ -46,4 +46,7 @@ public class VariantPanelStoreBool : VariantPanel {
         }
     }
 
+    public override List<ConnectionNub> GetNubs() {
+        return new List<ConnectionNub>() { nextNub };
+    }
 }

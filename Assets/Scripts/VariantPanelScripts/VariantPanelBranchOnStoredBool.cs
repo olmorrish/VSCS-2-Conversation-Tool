@@ -48,4 +48,8 @@ public class VariantPanelBranchOnStoredBool : VariantPanel {
 
         return nexts;
     }
+
+    public override List<ConnectionNub> GetNubs() {
+        return new List<ConnectionNub>() { nextNubTrue, nextNubFalse };
+    }
 }

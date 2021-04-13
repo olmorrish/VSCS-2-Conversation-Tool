@@ -43,4 +43,8 @@ public class VariantPanelNewSpeaker : VariantPanel {
             return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
         }
     }
+
+    public override List<ConnectionNub> GetNubs() {
+        return new List<ConnectionNub>() { nextNub };
+    }
 }

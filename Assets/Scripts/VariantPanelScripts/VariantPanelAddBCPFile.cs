@@ -38,4 +38,8 @@ public class VariantPanelAddBCPFile : VariantPanel {
             return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
         }
     }
+
+    public override List<ConnectionNub> GetNubs() {
+        return new List<ConnectionNub>() { nextNub };
+    }
 }

@@ -184,7 +184,6 @@ public class NodeController : MonoBehaviour {
 
         JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
 
-
         //iterate over all the chatnode data and spwawn them in
         int i = 0;
         while (loadedChatNodes[i] != null) {
@@ -219,10 +218,14 @@ public class NodeController : MonoBehaviour {
             //pass the JSON data to the node so it can populate itself
             newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
 
-            //TODO iterate over node data again and make nub connections based on "nexts"
+            //TODO iterate over node data again and collect nub connections based on "nexts"
 
             i++;
         }
+
+        //iterate over all the spawned chatnodes in the scene and connect them
+        //use GetOutgoingNubs() on a ChatNode to get it's nubs
+        //then use ConnectIncomingNub() on a ChatNode to connect it to one or more predecessors
     }
 
     /// <summary>
