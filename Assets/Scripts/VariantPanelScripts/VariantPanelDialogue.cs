@@ -22,7 +22,16 @@ public class VariantPanelDialogue : VariantPanel {
     }
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
-        throw new System.NotImplementedException();
+        foreach (KeyValuePair<string, string> pair in savedData) {
+            switch (pair.Key) {
+                case "speaker":
+                    speakerInputField.text = pair.Value.ToString();
+                    break;
+                case "contents":
+                    dialogueInputField.text = pair.Value.ToString();
+                    break;
+            }
+        }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {

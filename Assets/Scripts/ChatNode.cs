@@ -62,9 +62,9 @@ public class ChatNode : MonoBehaviour {
 
     }
 
-    // Update is called once per frame
-    void Update() {
-        
+    public void ManuallySelectNodeType(ChatNodeType typeToSet) {
+        selectedType = typeToSet;
+        //SpawnVariantPanel(selectedType); from a copy; don't need to set variant panel
     }
 
     void NodeTypeSelected(TMPro.TMP_Dropdown dropdown) {

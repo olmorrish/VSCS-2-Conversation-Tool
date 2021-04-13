@@ -27,7 +27,26 @@ public class VariantPanelPlayerResponse : VariantPanel {
     }
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
-        throw new System.NotImplementedException();
+
+        foreach (KeyValuePair<string, string> pair in savedData) {
+            switch (pair.Key) {
+                case "param":
+                    correctResponseInputField.text = pair.Value.ToString();
+                    break;
+                case "speaker":
+                    speakerInputField.text = pair.Value.ToString();
+                    break;
+                case "wrongreaction1":
+                    wrongReaction1InputField.text = pair.Value.ToString();
+                    break;
+                case "wrongreaction2":
+                    wrongReaction2InputField.text = pair.Value.ToString();
+                    break;
+                case "wrongreaction3":
+                    wrongReaction3InputField.text = pair.Value.ToString();
+                    break;
+            }
+        }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {

@@ -53,7 +53,19 @@ public class VariantPanelBranchOnPlayerInput : VariantPanel {
     }
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
-        throw new System.NotImplementedException();
+        foreach (KeyValuePair<string, string> pair in savedData) {
+            switch (pair.Key) {
+                case "optionA":
+                    optionAInputField.text = pair.Value.ToString();
+                    break;
+                case "optionB":
+                    optionBInputField.text = pair.Value.ToString();
+                    break;
+                case "optionC":
+                    optionCInputField.text = pair.Value.ToString();
+                    break;
+            }
+        }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {

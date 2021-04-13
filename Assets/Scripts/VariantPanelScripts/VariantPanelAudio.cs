@@ -20,13 +20,9 @@ public class VariantPanelAudio : VariantPanel {
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
 
-        Debug.Log("trying to populate an audio node. How many keys: " + savedData.Values.Count);
-
         foreach(KeyValuePair<string, string> pair in savedData) {
-            Debug.Log("Name: " + pair.Key);
             switch (pair.Key) {
                 case "param":
-                    Debug.Log("Trying to populate audio name field...");
                     audioClipNameInputField.text = pair.Value.ToString();
                     break;
             }

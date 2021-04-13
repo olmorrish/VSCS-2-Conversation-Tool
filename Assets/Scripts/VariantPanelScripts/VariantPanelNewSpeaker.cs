@@ -21,7 +21,17 @@ public class VariantPanelNewSpeaker : VariantPanel {
     }
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
-        throw new System.NotImplementedException();
+
+        foreach (KeyValuePair<string, string> pair in savedData) {
+            switch (pair.Key) {
+                case "param":
+                    newSpeakerNameInputField.text = pair.Value.ToString();
+                    break;
+                case "bnetid":
+                    newSpeakerBNETIDInputField.text = pair.Value.ToString();
+                    break;
+            }
+        }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {

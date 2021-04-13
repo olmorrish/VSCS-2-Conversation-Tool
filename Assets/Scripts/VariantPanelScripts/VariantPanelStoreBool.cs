@@ -23,7 +23,17 @@ public class VariantPanelStoreBool : VariantPanel {
     }
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
-        throw new System.NotImplementedException();
+
+        foreach (KeyValuePair<string, string> pair in savedData) {
+            switch (pair.Key) {
+                case "param":
+                    boolNameInputField.text = pair.Value.ToString();
+                    break;
+                case "boolparam":
+                    toggle.isOn = pair.Value.Equals("true");
+                    break;
+            }
+        }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {

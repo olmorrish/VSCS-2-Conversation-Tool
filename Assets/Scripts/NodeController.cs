@@ -34,15 +34,21 @@ public class NodeController : MonoBehaviour {
      */
     public void SpawnNewChatNode(GameObject toCopy) {
 
-        GameObject newChatNode = Instantiate(toCopy, this.transform);
-        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        GameObject newChatNodeObj = Instantiate(toCopy, this.transform);
+        ChatNode newChatNode = newChatNodeObj.GetComponent<ChatNode>();
+        newChatNodeObj.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
 
         //copy the nodetype of the previous node; this doesn't copy over cleanly otherwise
-        int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
-        newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
+        TMPro.TMP_Dropdown dropdown = newChatNode.nodetypeDropdown;
+        string text = dropdown.options[dropdown.value].text;
+        ChatNodeType typeToSelect = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
+        newChatNode.ManuallySelectNodeType(typeToSelect);
+
+        //int dropdownIndex = toCopy.GetComponent<ChatNode>().nodetypeDropdown.value;
+        //newChatNode.GetComponent<ChatNode>().nodetypeDropdown.value = dropdownIndex;
 
         //disconnect all nubs on the copy (one way); otherwise the connections persist
-        ConnectionNub[] allConnectionNubs = newChatNode.GetComponentsInChildren<ConnectionNub>();
+        ConnectionNub[] allConnectionNubs = newChatNodeObj.GetComponentsInChildren<ConnectionNub>();
         foreach (ConnectionNub nub in allConnectionNubs)
             nub.DisconnectThisNubOnly(); //leaves other end intact, only affects new nub
     }
@@ -218,8 +224,7 @@ public class NodeController : MonoBehaviour {
             }
 
 
-                //TODO iterate over other fields and add them to the dictionary, be sure to skip id, nodetype, and nodeposition (maybe? we remove it below?)
-                //TODO iterate over the dialogue array and connect with \n\n's
+            //TODO iterate over the dialogue array and connect with \n\n's
 
             nodeDataAsDictionary.Remove("nodeposition"); //we don't need position anymore, already applied it
 
@@ -230,10 +235,6 @@ public class NodeController : MonoBehaviour {
 
             i++;
         }
-
-
-
-        throw new NotImplementedException();
     }
 
     private void ClearScreen() {
