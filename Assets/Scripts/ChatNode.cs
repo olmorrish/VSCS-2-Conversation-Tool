@@ -167,7 +167,7 @@ public class ChatNode : MonoBehaviour {
             Debug.LogError("ERROR IMPORTING: ChatNode " + GetID() + " doesn't have enough free incoming nubs to deserialize the file properly.");
         }
         else {
-            incomingNubToConnect.ConnectToNub(myNubToConnect.gameObject); //connect the two
+            incomingNubToConnect.ConnectToNub(myNubToConnect); //connect the two
         }
     }
 

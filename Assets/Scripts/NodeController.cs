@@ -190,6 +190,7 @@ public class NodeController : MonoBehaviour {
         string processedContents = "";
 
         //set up dictionary for nexts
+        Dictionary<string, List<string>> nextDictionary = new Dictionary<string, List<string>>();
 
         //iterate over all the chatnode data and spwawn them in
         int i = 0;
@@ -221,7 +222,6 @@ public class NodeController : MonoBehaviour {
                     addContents = true;
                 }
 
-
                 else if (key.Equals("nodeposition")) {
                     //do nothing, we already applied this data to the transform and don't need to pass it to the node
                 }
@@ -239,14 +239,66 @@ public class NodeController : MonoBehaviour {
             //pass the JSON data to the node so it can populate itself
             newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
 
-            //TODO iterate over node data again and collect nub connections based on "nexts"
+            //collect nub connections based on "nexts", then remove ones that aren't there (null)
+            List<string> nextIDs = new List<string>();
+            nextIDs.Add(chatNodeJSONData["next"]);
+            nextIDs.Add(chatNodeJSONData["nextT"]);
+            nextIDs.Add(chatNodeJSONData["nextF"]);
+            nextIDs.Add(chatNodeJSONData["nextA"]);
+            nextIDs.Add(chatNodeJSONData["nextB"]);
+            nextIDs.Add(chatNodeJSONData["nextC"]);
+
+            while (nextIDs.Contains(null))
+                nextIDs.Remove(null);
+            while (nextIDs.Contains("TERMINATE"))
+                nextIDs.Remove("TERMINATE");
+
+            //map the id of the new node to the list of it's nexts; once all nodes are spawned in, we make the connections
+            nextDictionary.Add(newChatNodeObject.GetComponent<ChatNode>().GetID(), nextIDs);
 
             i++;
         }
 
-        //iterate over all the spawned chatnodes in the scene and connect them
-        //use GetOutgoingNubs() on a ChatNode to get it's nubs
-        //then use ConnectIncomingNub() on a ChatNode to connect it to one or more predecessors
+        //TODO iterate over all the spawned chatnodes in the scene and connect them
+        GameObject[] allChatNodes = GameObject.FindGameObjectsWithTag("Node");
+        foreach(GameObject n in allChatNodes) {
+
+            //get the ids of the next node
+            ChatNode node = n.GetComponent<ChatNode>();
+            string nodeID = node.GetID();
+
+            List<string> nodeNextIDs = nextDictionary[nodeID];
+            List<ConnectionNub> outgoingNubs = node.GetOutgoingNubs();
+
+            //TODO remove debug -------------------------
+            if (outgoingNubs.Count != nodeNextIDs.Count) {
+                Debug.Log("Connection count mismatch: node " + nodeID + " has " + outgoingNubs.Count + " outgoingNubs for it's variantpanel but " + nodeNextIDs.Count + " next nodes in it's JSON (This is ok if it's a leaf node!)");
+            }
+            else {
+                Debug.Log("Connection count good");
+            }
+            //TODO -------------------------
+
+            //connect jth outgoing nub for the ChatNode to the jth element of the next list
+            for (int j = 0; j < nodeNextIDs.Count; j++) {
+                //find reference to the other "next" node
+                ChatNode descendantNode = GetChatNodeWithID(allChatNodes, nodeNextIDs[j]);
+
+                //call ConnectIncomingNub to connect the nub
+                descendantNode.ConnectIncomingNub(outgoingNubs[j]);
+            }
+        }
+    }
+
+    private ChatNode GetChatNodeWithID(GameObject[] allNodes, string id) {
+        foreach(GameObject node in allNodes) {
+            ChatNode cNode = node.GetComponent<ChatNode>();
+            if (cNode.GetID().Equals(id)) {
+                return cNode;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

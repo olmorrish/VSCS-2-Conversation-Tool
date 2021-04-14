@@ -79,7 +79,7 @@ public class ConnectionNub : MonoBehaviour {
             ResetLineRenderer(); //no nub
         }
         else {
-            ConnectToNub(ray.collider.gameObject);
+            ConnectToNub(ray.collider.gameObject.GetComponent<ConnectionNub>());
 
 
         }
@@ -88,13 +88,14 @@ public class ConnectionNub : MonoBehaviour {
     /// <summary>
     /// Connects to another nub. This breaks any connection that nub might have.
     /// </summary>
-    public void ConnectToNub(GameObject connectingTo) {
-        connectedNub = connectingTo.GetComponent<ConnectionNub>();
-        line.SetPosition(1, connectingTo.transform.position);
+    public void ConnectToNub(ConnectionNub otherNub) {
+        connectedNub = otherNub;
 
         //Disconnect other nub then doubly link to us
         connectedNub.DisconnectNub();
         connectedNub.connectedNub = this;
+
+        //line.SetPosition(1, connectedNub.gameObject.transform.position);
     }
 
     /// <summary>
