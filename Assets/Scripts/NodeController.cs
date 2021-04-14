@@ -174,6 +174,7 @@ public class NodeController : MonoBehaviour {
             return;
         }
 
+        //load in the data
         string loadFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
 
         if (!File.Exists(loadFilePath)) {
@@ -183,6 +184,12 @@ public class NodeController : MonoBehaviour {
         }
 
         JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
+
+        //flag and string for post-processed contents
+        bool addContents = false;
+        string processedContents = "";
+
+        //set up dictionary for nexts
 
         //iterate over all the chatnode data and spwawn them in
         int i = 0;
@@ -203,8 +210,18 @@ public class NodeController : MonoBehaviour {
             JSONNode.KeyEnumerator keys = chatNodeJSONData.Keys;
             foreach(string key in keys) {
                 if (key.Equals("contents")) {
-                    //TODO post-processing for contents; connect with \n\n's
+
+                    JSONArray contentAsJSON = (JSONArray) chatNodeJSONData["contents"];
+
+                    foreach (string ckey in contentAsJSON.Values) {
+                        processedContents += ckey + "\n\n";
+                    }
+                    processedContents = processedContents.Substring(0, processedContents.Length - 2);
+
+                    addContents = true;
                 }
+
+
                 else if (key.Equals("nodeposition")) {
                     //do nothing, we already applied this data to the transform and don't need to pass it to the node
                 }
@@ -213,6 +230,10 @@ public class NodeController : MonoBehaviour {
                 }
             }
 
+            //add and remove contents
+            if (addContents) {
+                nodeDataAsDictionary.Add("processedcontents", processedContents);
+            }
             nodeDataAsDictionary.Remove("nodeposition"); //we don't need position anymore, already applied it
 
             //pass the JSON data to the node so it can populate itself
