@@ -196,16 +196,29 @@ public class NodeController : MonoBehaviour {
         int i = 0;
         while (loadedChatNodes[i] != null) {
 
+            Debug.Log("Loading in node number: " + i + "...");
+
             //get object and spawn a blank chatnode
-            JSONObject chatNodeJSONData = (JSONObject) loadedChatNodes[i];
-            GameObject newChatNodeObject = Instantiate(chatNodePrefab);
+            JSONObject chatNodeJSONData = (JSONObject)loadedChatNodes[i];
+            GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
+            newChatNodeObject.name = "ChatNode_" + i;
+
+            //if this is the first node, populate the head ID input field 
+            if (i == 0) {
+                headIDInputField.text = loadedChatNodes[0]["id"].Value.ToString();
+            }
 
             //obtain and then set the position
-            JSONArray nodePosition = (JSONArray) chatNodeJSONData["nodeposition"];
+            JSONArray nodePosition = (JSONArray)chatNodeJSONData["nodeposition"];
             float xPos = nodePosition[0];
             float yPos = nodePosition[1];
             newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
-            
+
+            //if this is the first node, focus the camera on it
+            if (i == 0) {
+                Camera.main.transform.position = new Vector3(xPos, yPos, -10f);
+            }
+
             //add all the fields in the json to a dictionary by iterating over the keys
             Dictionary<string, string> nodeDataAsDictionary = new Dictionary<string, string>();
             JSONNode.KeyEnumerator keys = chatNodeJSONData.Keys;
@@ -259,9 +272,11 @@ public class NodeController : MonoBehaviour {
             i++;
         }
 
-        //TODO iterate over all the spawned chatnodes in the scene and connect them
+        //iterate over all the spawned chatnodes in the scene and connect them
         GameObject[] allChatNodes = GameObject.FindGameObjectsWithTag("Node");
         foreach(GameObject n in allChatNodes) {
+
+            Debug.Log("Attempting to reconcile connections for node + " + n.GetComponent<ChatNode>().GetID() + "...");
 
             //get the ids of the next node
             ChatNode node = n.GetComponent<ChatNode>();
@@ -275,7 +290,7 @@ public class NodeController : MonoBehaviour {
                 Debug.Log("Connection count mismatch: node " + nodeID + " has " + outgoingNubs.Count + " outgoingNubs for it's variantpanel but " + nodeNextIDs.Count + " next nodes in it's JSON (This is ok if it's a leaf node!)");
             }
             else {
-                Debug.Log("Connection count good");
+                Debug.Log("Connection count is good: node " + nodeID);
             }
             //TODO -------------------------
 
@@ -305,9 +320,13 @@ public class NodeController : MonoBehaviour {
     /// Deletes all ChatNodes in the scene. Called before importing a file.
     /// </summary>
     private void ClearScreen() {
+        outputText.AddLine("Clearing screen");
         GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
-        foreach (GameObject node in allNodes)
+
+        foreach (GameObject node in allNodes) {
+            node.SetActive(false);
             Destroy(node);
+        }
     }
 
     /// <summary>
