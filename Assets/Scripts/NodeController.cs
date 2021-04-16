@@ -13,6 +13,10 @@ public class NodeController : MonoBehaviour {
     public TMPro.TMP_InputField exportNameInputField;
     public OutputText outputText;
 
+    [Header("Export Parameters")]
+    public bool useRealGamePath;
+    private const string vscsPath = "C:\\Users\\olive\\Documents\\Unity Projects\\VSCS-2\\Assets\\Resources";
+
     //[Header("Data")]
     private string headNodeID;
 
@@ -156,6 +160,10 @@ public class NodeController : MonoBehaviour {
 
         //write the JSON
         string saveFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+        if (useRealGamePath) {
+            saveFilePath = vscsPath + "\\" + exportNameInputField.text + ".json"; //the resources folder in the full game
+        }
+
         File.WriteAllText(saveFilePath, allNodes.ToString());
 
         outputText.AddLine("SUCCESS! Exported file as \"" + exportNameInputField.text + ".json\" (in AppData).");
@@ -176,6 +184,9 @@ public class NodeController : MonoBehaviour {
 
         //load in the data
         string loadFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+        if (useRealGamePath) {
+            loadFilePath = vscsPath + "\\" + exportNameInputField.text + ".json"; //the resources folder in the full game
+        }
 
         if (!File.Exists(loadFilePath)) {
             outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + exportNameInputField.text + ".json \"");
