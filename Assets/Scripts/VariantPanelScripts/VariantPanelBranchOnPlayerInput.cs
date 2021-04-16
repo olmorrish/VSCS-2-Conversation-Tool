@@ -53,6 +53,10 @@ public class VariantPanelBranchOnPlayerInput : VariantPanel {
     }
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
+
+        bool optionBWasInData = false; //B and C might not even be in the saved data
+        bool optionCWasInData = false;
+
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
                 case "optionA":
@@ -60,12 +64,18 @@ public class VariantPanelBranchOnPlayerInput : VariantPanel {
                     break;
                 case "optionB":
                     optionBInputField.text = pair.Value.ToString();
+                    optionBWasInData = true;
                     break;
                 case "optionC":
                     optionCInputField.text = pair.Value.ToString();
+                    optionCWasInData = true;
                     break;
             }
         }
+
+        //activate B and C toggles if we just populated those; else deactivate
+        optionBToggle.isOn = optionBWasInData;
+        optionCToggle.isOn = optionCWasInData;
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {
