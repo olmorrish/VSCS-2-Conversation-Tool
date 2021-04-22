@@ -4,6 +4,7 @@ using UnityEngine;
 using SimpleJSON;
 using System;
 using System.IO;
+using UnityEngine.UI;
 
 public class NodeController : MonoBehaviour {
 
@@ -12,6 +13,7 @@ public class NodeController : MonoBehaviour {
     public TMPro.TMP_InputField headIDInputField;
     public TMPro.TMP_InputField exportNameInputField;
     public OutputText outputText;
+    public Toggle autoGenerateNodeIDs;
 
     [Header("Export Parameters")]
     public bool useRealGamePath;
@@ -53,6 +55,11 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void Export() {
 
+        //autoID the nodes; doesn't change head node or overwrite it
+        if (autoGenerateNodeIDs.isOn) {
+            AutoGenerateAllNodeIDs();
+        }
+
         //find the head node
         string headNodeID = headIDInputField.text;
         string exportName = exportNameInputField.text;
@@ -92,8 +99,6 @@ public class NodeController : MonoBehaviour {
 
         //topologically sort all nodes in the scene; this stores them in sortedNodes
         TopologicalSortNodes(allChatNodes, headNode);
-
-        //Debug.Log(allData.PrintData()); //TODO REMOVE DEBUG
 
         //error check sorted nodes for duplicate IDs
         List<string> allIDs = new List<string>();
@@ -207,8 +212,6 @@ public class NodeController : MonoBehaviour {
         int i = 0;
         while (loadedChatNodes[i] != null) {
 
-            //Debug.Log("Loading in node number: " + i + "...");
-
             //get object and spawn a blank chatnode
             JSONObject chatNodeJSONData = (JSONObject)loadedChatNodes[i];
             GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
@@ -309,6 +312,12 @@ public class NodeController : MonoBehaviour {
         outputText.AddLine("SUCCESS! Imported file as \"" + exportNameInputField.text + ".json\".");
     }
 
+    /// <summary>
+    /// Gets a chat node with a specific ID.
+    /// </summary>
+    /// <param name="allNodes">All the nodes to search through.</param>
+    /// <param name="id">The ID to look for.</param>
+    /// <returns></returns>
     private ChatNode GetChatNodeWithID(GameObject[] allNodes, string id) {
         foreach(GameObject node in allNodes) {
             ChatNode cNode = node.GetComponent<ChatNode>();
@@ -318,6 +327,41 @@ public class NodeController : MonoBehaviour {
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Renames all the ChatNodes in the scene.
+    /// This will not change the head node ID, nor will i rename another node to have the same ID as the head node.
+    /// </summary>
+    public void AutoGenerateAllNodeIDs() {
+
+        string headNodeID = headIDInputField.text;
+
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
+
+        int i = 0;
+        foreach(GameObject chatNode in allNodes) {
+
+            TMPro.TMP_InputField thisNodeIDField = chatNode.GetComponent<ChatNode>().idInputField;
+            
+            //if we're about to give a node the same ID as the head... skip that number
+            if (i.ToString().Equals(headNodeID)) {
+                i++;
+            }
+            
+            //if this is the head node, skip renaming it
+            if (thisNodeIDField.text.Equals(headNodeID)) {
+                Debug.Log("Not renaming node w/ ID: " + thisNodeIDField.text);
+                continue;
+            }
+            else {
+                thisNodeIDField.text = i.ToString();
+                i++;
+            }
+
+        }
+
+        outputText.AddLine("New ChatNode IDs have been generated. The head node ID has not overwritten or duplicated.");
     }
 
     /// <summary>
