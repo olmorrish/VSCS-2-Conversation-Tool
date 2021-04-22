@@ -100,17 +100,9 @@ public class NodeController : MonoBehaviour {
         //topologically sort all nodes in the scene; this stores them in sortedNodes
         TopologicalSortNodes(allChatNodes, headNode);
 
-        //error check sorted nodes for duplicate IDs
-        List<string> allIDs = new List<string>();
-        foreach (ChatNode node in sortedNodes) {
-            string id = node.GetID();
-            if (allIDs.Contains(id)) {
-                outputText.AddLine("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
-                Debug.LogWarning("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
-            }
-            else {
-                allIDs.Add(id);
-            }
+        //Check for duplicate IDs
+        if (CheckForDuplicateIDs()) {
+            return;
         }
 
         //get a dictionary of entries for each node
@@ -351,7 +343,6 @@ public class NodeController : MonoBehaviour {
             
             //if this is the head node, skip renaming it
             if (thisNodeIDField.text.Equals(headNodeID)) {
-                Debug.Log("Not renaming node w/ ID: " + thisNodeIDField.text);
                 continue;
             }
             else {
@@ -362,6 +353,34 @@ public class NodeController : MonoBehaviour {
         }
 
         outputText.AddLine("New ChatNode IDs have been generated. The head node ID has not overwritten or duplicated.");
+    }
+
+    /// <summary>
+    /// Checks all nodes for duplicate IDs. Called when exporting, but after any autorenaming.
+    /// </summary>
+    /// <returns>True if there is a duplicate node ID.</returns>
+    private bool CheckForDuplicateIDs() {
+
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
+
+        List<string> allIDs = new List<string>();
+        foreach (GameObject nodeObj in allNodes) {
+
+            Debug.Log("Checking for duplicate nodes...");
+
+            string id = nodeObj.GetComponent<ChatNode>().GetID();
+            if (allIDs.Contains(id)) {
+                outputText.AddLine("ERROR EXPORTING: The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
+                Debug.LogWarning("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
+                return true;
+            }
+            else {
+                allIDs.Add(id);
+            }
+
+        }
+
+        return false;
     }
 
     /// <summary>
