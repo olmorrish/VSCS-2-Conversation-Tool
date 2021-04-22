@@ -37,6 +37,20 @@ public class NodeController : MonoBehaviour {
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
     }
 
+    public void SpawnNewDialogueChatNode() {
+        GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
+        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+
+        newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("Dialogue");
+    }
+
+    public void SpawnNewBranchOnPlayerInputChatNode() {
+        GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
+        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+
+        newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("BranchOnPlayerInput");
+    }
+
     /// <summary>
     /// Copy spawner, called by copy button on ChatNode. Tells new ChatnNode to copy the passed one.
     /// </summary>
@@ -228,7 +242,9 @@ public class NodeController : MonoBehaviour {
             //add all the fields in the json to a dictionary by iterating over the keys
             Dictionary<string, string> nodeDataAsDictionary = new Dictionary<string, string>();
             JSONNode.KeyEnumerator keys = chatNodeJSONData.Keys;
-            foreach(string key in keys) {
+            processedContents = "";
+
+            foreach (string key in keys) {
                 if (key.Equals("contents")) {
 
                     JSONArray contentAsJSON = (JSONArray) chatNodeJSONData["contents"];

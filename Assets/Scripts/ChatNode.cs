@@ -227,20 +227,33 @@ public class ChatNode : MonoBehaviour {
         idInputField.text = data["id"];
         data.Remove("id");
 
+        //Set the node type, which spawns in the variant panel
+        SetNodeTypeFromString(data["nodetype"]);
+        data.Remove("nodetype");
+
+        //pass on the remaining data to populate the variant panel that was set
+        currentVariantPanel.PopulateVariantPanelData(data);
+
+        //don't handle nub connections here; we have to spawn all desendants first
+    }
+
+    /// <summary>
+    /// Given the string name of the node type, assign the type to the dropdown.
+    /// </summary>
+    /// <param name="typeAsString">The node type as a string.</param>
+    public void SetNodeTypeFromString(string typeAsString) {
+
         //get all options as strings, find the index matching the nodetype value, then set that index
         List<TMPro.TMP_Dropdown.OptionData> menuOptions = nodetypeDropdown.GetComponent<TMPro.TMP_Dropdown>().options;
         List<string> menuOptionsAsStrings = new List<string>();
         foreach (TMPro.TMP_Dropdown.OptionData optionData in menuOptions) {
             menuOptionsAsStrings.Add(optionData.text);
         }
-        nodetypeDropdown.value = menuOptionsAsStrings.IndexOf(data["nodetype"]);
-        data.Remove("nodetype");
+        nodetypeDropdown.value = menuOptionsAsStrings.IndexOf(typeAsString);
 
-        //spawn in the variantpanel, then pass on the remaining data to populate it
+        //spawn in the variantpanel, then 
         NodeTypeSelected(nodetypeDropdown);
-        currentVariantPanel.PopulateVariantPanelData(data);
 
-        //don't handle nub connections here; we have to spawn all desendants first
     }
 
     /// <summary>
