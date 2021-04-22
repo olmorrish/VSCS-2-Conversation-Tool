@@ -5,6 +5,7 @@ using SimpleJSON;
 using System;
 using System.IO;
 using UnityEngine.UI;
+using System.Linq;
 
 public class NodeController : MonoBehaviour {
 
@@ -37,6 +38,9 @@ public class NodeController : MonoBehaviour {
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
     }
 
+    /// <summary>
+    /// Spawn a new Dialogue ChatNode in the center of the view.
+    /// </summary>
     public void SpawnNewDialogueChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
@@ -44,6 +48,9 @@ public class NodeController : MonoBehaviour {
         newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("Dialogue");
     }
 
+    /// <summary>
+    /// Spawn a new BranchOnPlayerInput ChatNode in the center of the view.
+    /// </summary>
     public void SpawnNewBranchOnPlayerInputChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
@@ -114,6 +121,9 @@ public class NodeController : MonoBehaviour {
         //topologically sort all nodes in the scene; this stores them in sortedNodes
         TopologicalSortNodes(allChatNodes, headNode);
 
+        List<ChatNode> disconnectedNodes = allChatNodes.Except(sortedNodes).ToList();
+        outputText.AddLine("Found " + disconnectedNodes.Count + " disconnected nodes. Links between these nodes might not be preserved!");
+
         //Check for duplicate IDs
         if (CheckForDuplicateIDs()) {
             return;
@@ -123,6 +133,11 @@ public class NodeController : MonoBehaviour {
         List<Dictionary<string, string>> nodeEntries = new List<Dictionary<string, string>>();
         foreach(ChatNode node in sortedNodes) {
             nodeEntries.Add(node.GetChatNodeData());
+        }
+
+        //now do the same for the disconnected nodes; they will always go after the sorted nodes and their connections may break
+        foreach (ChatNode disconnectedNode in disconnectedNodes) {
+            nodeEntries.Add(disconnectedNode.GetChatNodeData());
         }
 
         //convert dictionaries to a JSON array
@@ -403,7 +418,6 @@ public class NodeController : MonoBehaviour {
     /// Deletes all ChatNodes in the scene. Called before importing a file.
     /// </summary>
     private void ClearScreen() {
-        outputText.AddLine("Clearing all nodes...");
         GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
 
         foreach (GameObject node in allNodes) {
