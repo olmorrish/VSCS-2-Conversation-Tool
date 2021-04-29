@@ -5,17 +5,19 @@ using UnityEngine;
 
 public class MultiSelect : MonoBehaviour {
 
-    //GameObject[]
-    LineRenderer[] lines;
 
-    bool mouseDownDrawingRect = false;
+    public float distUntilSelect; //distance the mouse has to move while held down to start drawing the selection
+    [HideInInspector] public List<GameObject> selectedNodes;
+    LineRenderer[] lines;
     Vector2 mouseDownPos;
+    bool mouseDownDrawingRect = false; //
 
     // Start is called before the first frame update
     void Start() {
         mouseDownDrawingRect = false;
 
         lines = GetComponentsInChildren<LineRenderer>();
+        selectedNodes = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -24,27 +26,42 @@ public class MultiSelect : MonoBehaviour {
             DrawRect(mouseDownPos, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
 
-
         if (Input.GetMouseButtonDown(0)) {
             if (MouseNotOnCollider()) {
                 mouseDownPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 mouseDownDrawingRect = true;
 
+                //TODO clear selected nodes
+                if (selectedNodes.Count > 0)
+                    DeselectNodes();
             }
 
         }
-
         else if (Input.GetMouseButtonUp(0)) {
             mouseDownDrawingRect = false;
             UndrawRect();
 
             Vector2 mouseUpPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            List<GameObject> selectedNodes = CollectNodesWithin(mouseDownPos, mouseUpPos);
+            if((mouseDownPos - mouseUpPos).magnitude > distUntilSelect) {
 
-            //TODO
+                List<GameObject> nodesWithinBounds = CollectNodesWithin(mouseDownPos, mouseUpPos);
 
+                SelectNodes(nodesWithinBounds);
+            }
         }
+    }
+
+    private void SelectNodes(List<GameObject> nodesToSelect) {
+        selectedNodes = new List<GameObject>();
+        selectedNodes.AddRange(nodesToSelect);
+
+        Debug.Log("Selected " + selectedNodes.Count + " nodes within those lines.");
+    }
+
+    private void DeselectNodes() {
+        Debug.Log("Deselected " + selectedNodes.Count + " nodes.");
+        selectedNodes.Clear();
     }
 
     private List<GameObject> CollectNodesWithin(Vector2 pointA, Vector2 pointB) {
@@ -54,13 +71,48 @@ public class MultiSelect : MonoBehaviour {
 
         foreach (GameObject nodeObj in allChatNodeObjs) {
 
-            Vector2 nodePos = nodeObj.transform.position; 
+            Vector2 nodePos = nodeObj.transform.position;
 
-            //TODO
+            //bottom right of A
+            if (pointB.x > pointA.x && pointB.y < pointA.y) {
+                if (nodePos.x > pointA.x && nodePos.x < pointB.x
+                    && nodePos.y < pointA.y && nodePos.y > pointB.y) {
+
+                    nodesWithinBounds.Add(nodeObj);
+                }
+            }
+
+            //top right of A
+            else if (pointB.x > pointA.x && pointB.y > pointA.y) {
+                if (nodePos.x > pointA.x && nodePos.x < pointB.x
+                    && nodePos.y > pointA.y && nodePos.y < pointB.y) {
+
+                    nodesWithinBounds.Add(nodeObj);
+                }
+
+
+            }
+
+            //bottom left of A
+            else if (pointB.x < pointA.x && pointB.y < pointA.y) {
+                if (nodePos.x < pointA.x && nodePos.x > pointB.x
+                    && nodePos.y < pointA.y && nodePos.y > pointB.y) {
+
+                    nodesWithinBounds.Add(nodeObj);
+                }
+            }
+
+            //top left of A
+            else if (pointB.x < pointA.x && pointB.y > pointA.y) {
+                if (nodePos.x < pointA.x && nodePos.x > pointB.x
+                    && nodePos.y > pointA.y && nodePos.y < pointB.y) {
+
+                    nodesWithinBounds.Add(nodeObj);
+                }
+            }
 
         }
 
-        Debug.Log("Collected " + nodesWithinBounds.Count + " nodes within those lines.");
 
         return nodesWithinBounds;
     }
@@ -102,5 +154,19 @@ public class MultiSelect : MonoBehaviour {
         }
 
         return true;
+    }
+
+    public void MoveAllSelectedNodesBy(Vector2 movement, GameObject exceptionNode) {
+
+        foreach (GameObject node in selectedNodes) {
+
+            if (!node.Equals(exceptionNode)) {
+                node.transform.localPosition = new Vector3(node.transform.position.x + movement.x,
+                    node.transform.position.y + movement.y,
+                    0f);
+            }
+
+        }
+
     }
 }
