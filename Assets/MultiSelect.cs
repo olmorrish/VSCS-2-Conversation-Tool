@@ -26,18 +26,16 @@ public class MultiSelect : MonoBehaviour {
             DrawRect(mouseDownPos, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         }
 
-        if (Input.GetMouseButtonDown(0)) {
-            if (MouseNotOnCollider()) {
-                mouseDownPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mouseDownDrawingRect = true;
+        if (Input.GetMouseButtonDown(0) && MouseNotOnCollider()) {
+            mouseDownPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseDownDrawingRect = true;
 
-                //TODO clear selected nodes
-                if (selectedNodes.Count > 0)
-                    DeselectNodes();
-            }
+            //TODO clear selected nodes
+            if (selectedNodes.Count > 0)
+                DeselectNodes();
 
         }
-        else if (Input.GetMouseButtonUp(0)) {
+        else if (Input.GetMouseButtonUp(0) && MouseNotOnCollider()) {
             mouseDownDrawingRect = false;
             UndrawRect();
 
@@ -56,11 +54,18 @@ public class MultiSelect : MonoBehaviour {
         selectedNodes = new List<GameObject>();
         selectedNodes.AddRange(nodesToSelect);
 
-        Debug.Log("Selected " + selectedNodes.Count + " nodes within those lines.");
+        foreach (GameObject node in selectedNodes)
+            node.GetComponent<SpriteRenderer>().color = Color.black;
+
+        //Debug.Log("Selected " + selectedNodes.Count + " nodes within those lines.");
     }
 
     private void DeselectNodes() {
-        Debug.Log("Deselected " + selectedNodes.Count + " nodes.");
+
+        foreach (GameObject node in selectedNodes)
+            node.GetComponent<SpriteRenderer>().color = Color.white;
+
+        //Debug.Log("Deselected " + selectedNodes.Count + " nodes.");
         selectedNodes.Clear();
     }
 
@@ -149,7 +154,7 @@ public class MultiSelect : MonoBehaviour {
         RaycastHit2D ray = Physics2D.Raycast(mousePos, new Vector3(0, 0, 1), 10);
 
         if(ray.collider != null) {
-            Debug.Log("Click hit something; not drawing a multi rect");
+            //Debug.Log("Click hit something; not drawing a multi rect");
             return false;
         }
 
