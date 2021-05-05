@@ -202,6 +202,8 @@ public class NodeController : MonoBehaviour {
 
         ClearScreen();
 
+        Vector2 oldFileCoordinates = new Vector2(-60f, 0f); //a running coordinate that spreads out nodes if they are from a file where they were not stored
+
         if (exportNameInputField.text.Equals("")) {
             outputText.AddLine("ERROR IMPORTING: No import name was specified.");
             Debug.LogWarning("ERROR IMPORTING: No import name was specified.");
@@ -243,11 +245,35 @@ public class NodeController : MonoBehaviour {
                 headIDInputField.text = loadedChatNodes[0]["id"].Value.ToString();
             }
 
+            float xPos;
+            float yPos;
+
             //obtain and then set the position
-            JSONArray nodePosition = (JSONArray)chatNodeJSONData["nodeposition"];
-            float xPos = nodePosition[0];
-            float yPos = nodePosition[1];
-            newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
+            try {
+                JSONArray nodePosition = (JSONArray)chatNodeJSONData["nodeposition"];
+                xPos = nodePosition[0];
+                yPos = nodePosition[1];
+                newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
+            }
+            //if there is no position, this is an old file; use the old file coordinates and update them as we go for node spawns
+            catch (InvalidCastException e) {
+                xPos = oldFileCoordinates.x;
+                yPos = oldFileCoordinates.y;
+
+                newChatNodeObject.transform.position = new Vector3(oldFileCoordinates.x, oldFileCoordinates.y, 0f);
+
+                float newXPos = xPos + 30f;
+                float newYPos = yPos;
+                if (newXPos > 60) { //creates the nodes in rows of five
+                    newXPos = -60;
+                    newYPos += 20;
+                }
+                oldFileCoordinates = new Vector2(newXPos, newYPos);
+            }
+
+
+
+            //set the position
 
             //if this is the first node, focus the camera on it
             if (i == 0) {

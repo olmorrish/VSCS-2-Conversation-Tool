@@ -1527,6 +1527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distUntilSelect: 5
+  selectedNodes: []
 --- !u!4 &416824168
 Transform:
   m_ObjectHideFlags: 0
@@ -1584,9 +1585,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ece776a9a21a0be4fb64dc67031536ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSensitivity: 15
+  scrollSensitivity: 20
   minZoom: 10
-  maxZoom: 100
+  maxZoom: 400
   directionalScrollMultiplier: 0.005
 --- !u!20 &519420031
 Camera:
