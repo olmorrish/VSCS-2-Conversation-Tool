@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public enum ChatNodeType {
+    AddBCPApp,              //adds an app download to the BCP
     AddBCPFile,             //makes a BCP reserve file available
     AddContact,             //adds a contact for player access
     AddFeedArticle,         //makes a Feed reserve article available
@@ -22,6 +23,7 @@ public enum ChatNodeType {
 public class ChatNode : MonoBehaviour {
 
     [Header("Variant Panel Prefabs")]
+    public GameObject variantPanelAddBCPApp;
     public GameObject variantPanelAddBCPFile; //done
     public GameObject variantPanelAddContact; //done
     public GameObject variantPanelAddFeedArticle;
@@ -93,6 +95,9 @@ public class ChatNode : MonoBehaviour {
         Destroy(currentVariantPanelObject);
 
         switch (selected) {
+            case ChatNodeType.AddBCPApp:
+                currentVariantPanelObject = Instantiate(variantPanelAddBCPApp, myCanvas.transform);
+                break;
             case ChatNodeType.AddBCPFile:
                 currentVariantPanelObject = Instantiate(variantPanelAddBCPFile, myCanvas.transform);
                 break;

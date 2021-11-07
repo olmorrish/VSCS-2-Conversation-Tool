@@ -266,7 +266,7 @@ public class NodeController : MonoBehaviour {
                 float newYPos = yPos;
                 if (newXPos > 60) { //creates the nodes in rows of five
                     newXPos = -60;
-                    newYPos += 20;
+                    newYPos -= 20;
                 }
                 oldFileCoordinates = new Vector2(newXPos, newYPos);
             }

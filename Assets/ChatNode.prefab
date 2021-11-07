@@ -3007,6 +3007,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23aece568cd5e724f8b844cf181fe170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  variantPanelAddBCPApp: {fileID: 4180807586730239309, guid: 9f3dd8d566cabbf4696de34a8ed02da4,
+    type: 3}
   variantPanelAddBCPFile: {fileID: 6088695766662802712, guid: e735f113f120cf34dace8c19aa865cb1,
     type: 3}
   variantPanelAddContact: {fileID: 3537018345054833079, guid: dacc50a2d2949cf4e80cbdfcdae4143c,
