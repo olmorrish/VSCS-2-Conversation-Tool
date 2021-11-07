@@ -29,7 +29,7 @@ public class VariantPanelAddBCPApp : VariantPanel {
                 case "param":
                     appNameInputField.text = pair.Value.ToString();
                     break;
-                case "displayName":
+                case "displayname":
                     displayNameInputField.text = pair.Value.ToString();
                     break;
                 case "bnetid":

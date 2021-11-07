@@ -122,7 +122,9 @@ public class NodeController : MonoBehaviour {
         TopologicalSortNodes(allChatNodes, headNode);
 
         List<ChatNode> disconnectedNodes = allChatNodes.Except(sortedNodes).ToList();
-        outputText.AddLine("Found " + disconnectedNodes.Count + " disconnected nodes. Links between these nodes might not be preserved!");
+        if (disconnectedNodes.Count > 0) {
+            outputText.AddLine("Found " + disconnectedNodes.Count + " disconnected nodes. These nodes may not be accessible within the conversation!");
+        }
 
         //Check for duplicate IDs
         if (CheckForDuplicateIDs()) {
