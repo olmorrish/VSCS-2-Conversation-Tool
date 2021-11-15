@@ -41,7 +41,7 @@ Luckily, there exists an algorithm for sorting nodes in a DAG such that a parent
 
 <h2>Links/Further Reading</h2>
 <ul>
-<li>VSCS-II: https://olmorrish.itch.io/vscs-ii</li>
+<li>VSCS-II: https://store.steampowered.com/app/1528590/VSCSII/</li>
 <li>My itch.io portfolio: https://olmorrish.itch.io/</li>
 <li>Topological Sort: https://en.wikipedia.org/wiki/Topological_sorting</li>
 </ul>
