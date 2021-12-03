@@ -12,21 +12,27 @@ public class NodeController : MonoBehaviour {
     [Header("References")]
     public GameObject chatNodePrefab;
     public TMPro.TMP_InputField headIDInputField;
-    public TMPro.TMP_InputField exportNameInputField;
     public OutputText outputText;
     public Toggle autoGenerateNodeIDs;
+    public GameObject importWindowPrefab;
+    public GameObject exportWindowPrefab;
 
     [Header("Export Parameters")]
     public bool useRealGamePath;
-    private const string vscsPath = "C:\\Users\\olive\\Documents\\Unity Projects\\VSCS-2\\Assets\\Resources";
+    public string vscsPath = "C:\\Users\\olive\\Documents\\Unity Projects\\VSCS-2\\Assets\\Resources";
 
     //[Header("Data")]
     private string headNodeID;
+    public string currentFileName;
 
     //support data for topological sort; reset each time
     private Dictionary<string, bool> temporaryMarks;
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
+
+    public void Awake() {
+        currentFileName = string.Empty;
+    }
 
     #region Button Fuctions
 
@@ -74,7 +80,7 @@ public class NodeController : MonoBehaviour {
     /// <summary>
     /// Export all nodes to JSON.
     /// </summary>
-    public void Export() {
+    public void Export(string exportFileName) {
 
         //autoID the nodes; doesn't change head node or overwrite it
         if (autoGenerateNodeIDs.isOn) {
@@ -83,14 +89,13 @@ public class NodeController : MonoBehaviour {
 
         //find the head node
         string headNodeID = headIDInputField.text;
-        string exportName = exportNameInputField.text;
 
         if (headNodeID.Equals("")) {
             outputText.AddLine("ERROR EXPORTING: No head node ID was specified.");
             Debug.LogWarning("ERROR EXPORTING: No head node ID was specified.");
             return;
         }
-        else if (exportName.Equals("")) {
+        else if (exportFileName.Equals("")) {
             outputText.AddLine("ERROR EXPORTING: No export name was specified.");
             Debug.LogWarning("ERROR EXPORTING: No export name was specified.");
             return;
@@ -187,41 +192,44 @@ public class NodeController : MonoBehaviour {
         Debug.Log(allNodes.ToString());
 
         //write the JSON
-        string saveFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+        string saveFilePath = Application.persistentDataPath + "\\" + exportFileName + ".json";
         if (useRealGamePath) {
-            saveFilePath = vscsPath + "\\" + exportNameInputField.text + ".json"; //the resources folder in the full game
+            saveFilePath = vscsPath + "\\" + exportFileName + ".json"; //the resources folder in the full game
         }
 
         File.WriteAllText(saveFilePath, allNodes.ToString());
 
-        outputText.AddLine("SUCCESS! Exported file as \"" + exportNameInputField.text + ".json\" (in AppData).");
+        outputText.AddLine("SUCCESS! Exported file as \"" + exportFileName + ".json\" (in AppData).");
     }
 
     /// <summary>
     /// Imports a file, given the entered file name. This clears the scene then populates it with the saved ChatNodes.
     /// </summary>
-    public void Import() {
+    public void Import(string importFileName) {
 
         ClearScreen();
 
         Vector2 oldFileCoordinates = new Vector2(-60f, 0f); //a running coordinate that spreads out nodes if they are from a file where they were not stored
 
-        if (exportNameInputField.text.Equals("")) {
+        if (importFileName.Equals("")) {
             outputText.AddLine("ERROR IMPORTING: No import name was specified.");
             Debug.LogWarning("ERROR IMPORTING: No import name was specified.");
             return;
         }
 
         //load in the data
-        string loadFilePath = Application.persistentDataPath + "\\" +  exportNameInputField.text + ".json";
+        string loadFilePath = Application.persistentDataPath + "\\" + importFileName + ".json";
         if (useRealGamePath) {
-            loadFilePath = vscsPath + "\\" + exportNameInputField.text + ".json"; //the resources folder in the full game
+            loadFilePath = vscsPath + "\\" + importFileName + ".json"; //the resources folder in the full game
         }
 
         if (!File.Exists(loadFilePath)) {
-            outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + exportNameInputField.text + ".json \"");
-            Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + exportNameInputField.text + ".json \"");
+            outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + importFileName + ".json \"");
+            Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + importFileName + ".json \"");
             return;
+        }
+        else {
+            currentFileName = loadFilePath;
         }
 
         JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
@@ -360,7 +368,7 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-        outputText.AddLine("SUCCESS! Imported file as \"" + exportNameInputField.text + ".json\".");
+        outputText.AddLine("SUCCESS! Imported file as \"" + importFileName + ".json\".");
     }
 
     /// <summary>
@@ -452,6 +460,22 @@ public class NodeController : MonoBehaviour {
             node.SetActive(false);
             Destroy(node);
         }
+    }
+
+    /// <summary>
+    /// Spawns the export window. Called by button.
+    /// </summary>
+    public void SpawnExportWindow() {
+        GameObject newWindow = Instantiate(exportWindowPrefab, gameObject.transform);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
+    }
+
+    /// <summary>
+    /// Spawns the import window. Called by button.
+    /// </summary>
+    public void SpawnImportWindow() {
+        GameObject newWindow = Instantiate(importWindowPrefab, gameObject.transform);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
     }
 
     /// <summary>
