@@ -444,7 +444,6 @@ public class NodeController : MonoBehaviour {
             else {
                 allIDs.Add(id);
             }
-
         }
 
         return false;
