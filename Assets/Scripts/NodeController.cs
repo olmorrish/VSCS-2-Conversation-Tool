@@ -274,7 +274,7 @@ public class NodeController : MonoBehaviour {
                 newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
             }
             //if there is no position, this is an old file; use the old file coordinates and update them as we go for node spawns
-            catch (InvalidCastException e) {
+            catch (InvalidCastException) {
                 xPos = oldFileCoordinates.x;
                 yPos = oldFileCoordinates.y;
 
