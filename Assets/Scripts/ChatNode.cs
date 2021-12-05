@@ -16,6 +16,7 @@ public enum ChatNodeType {
     Delay,                  //waits for a set amount of time specified by delayLength
     Dialogue,               //presents text to the player
     NewSpeaker,
+    Note,
     PlayerResponse,         //waits for a player text input and loops until it is correct
     StoreBool               //writes a boolean in the backend
 }
@@ -34,6 +35,7 @@ public class ChatNode : MonoBehaviour {
     public GameObject variantPanelDelay;
     public GameObject variantPanelDialogue; //done
     public GameObject variantPanelNewSpeaker;
+    public GameObject variantPanelNote;
     public GameObject variantPanelPlayerResponse;
     public GameObject variantPanelStoreBool;
 
@@ -127,6 +129,9 @@ public class ChatNode : MonoBehaviour {
                 break;
             case ChatNodeType.NewSpeaker:
                 currentVariantPanelObject = Instantiate(variantPanelNewSpeaker, myCanvas.transform);
+                break;
+            case ChatNodeType.Note:
+                currentVariantPanelObject = Instantiate(variantPanelNote, myCanvas.transform);
                 break;
             case ChatNodeType.PlayerResponse:
                 currentVariantPanelObject = Instantiate(variantPanelPlayerResponse, myCanvas.transform);

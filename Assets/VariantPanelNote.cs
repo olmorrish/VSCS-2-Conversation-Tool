@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NoteNode : MonoBehaviour {
+public class VariantPanelNote : VariantPanel {
 
     public TMPro.TMP_InputField noteTextInputField;
     public Toggle toggle;
@@ -14,12 +14,7 @@ public class NoteNode : MonoBehaviour {
         bodyPanelImage.color = toggle.isOn ? Color.yellow : Color.white;
     }
 
-    /// <summary>
-    /// Returns the data as a dictionary indexed by value names. 
-    /// This is similar to the VariantPanel exports and is saved in the same fashion, but without the interface. 
-    /// </summary>
-    /// <returns>The note data as a dictionary.</returns>
-    public Dictionary<string, string> GetNoteData() {
+    public override Dictionary<string, string> GetVariantPanelData() {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
 
@@ -29,12 +24,7 @@ public class NoteNode : MonoBehaviour {
         return ret;
     }
 
-    /// <summary>
-    /// Sets the data from a dictionary that was serialized. 
-    /// This is similar to the VariantPanel imports and is loaded in the same fashion, but without the interface. 
-    /// </summary>
-    /// <param name="savedData">Dictionary containing the saved note data.</param>
-    public void PopulateNoteData(Dictionary<string, string> savedData) {
+    public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
 
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
@@ -46,5 +36,13 @@ public class NoteNode : MonoBehaviour {
                     break;
             }
         }
+    }
+
+    public override List<ChatNode> GetDescendantChatNodes() {
+        return new List<ChatNode> { };
+    }
+
+    public override List<ConnectionNub> GetNubs() {
+        return new List<ConnectionNub> { };
     }
 }
