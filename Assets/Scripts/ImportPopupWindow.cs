@@ -22,6 +22,7 @@ public class ImportPopupWindow : MonoBehaviour {
             instance = this;
         }
 
+        //find the nodecontroller and set the text for the current file
         nodeController = GameObject.Find("NodeController").GetComponent<NodeController>();
         if (nodeController.currentFileName != string.Empty)
             detectedFile.text = "The current file is: \"" + nodeController.currentFileName + "\"";

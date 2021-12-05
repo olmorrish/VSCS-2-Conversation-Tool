@@ -228,9 +228,10 @@ public class NodeController : MonoBehaviour {
             Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + importFileName + ".json \"");
             return;
         }
-        else {
-            currentFileName = loadFilePath;
-        }
+
+        //file exists; load in "<thisPart>.json" part of the name as current
+        string[] pathSplit = loadFilePath.Split('\\');
+        currentFileName = pathSplit[pathSplit.Length - 1].Split('.')[0];
 
         JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
 
