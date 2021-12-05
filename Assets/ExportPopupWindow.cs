@@ -39,27 +39,41 @@ public class ExportPopupWindow : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+        //if a file is currently loaded...
+        if (nodeController.fileLoaded) {
 
-        //if the field is blank but something is loaded, export with the current name -- export is okay!
-        if (customExportNameField.text == "" && nodeController.currentFileName != "") {
-            statusText.color = green;
-            statusText.text = "This file will be exported with previous name: \"" + nodeController.currentFileName + "\"";
-            exportOkay = true;
+            //if the field is blank or matches, export with the current name
+            if (customExportNameField.text == "" || customExportNameField.text == nodeController.currentFileName) {
+                statusText.color = green;
+                statusText.text = "This file will be exported with previous name as: \"" + nodeController.currentFileName + "\".json";
+                exportOkay = true;
+            }
+
+            //otherwise, there is a new filename that doesn't match, so show a warning
+            else {
+                statusText.color = yellow;
+                statusText.text = "This file was imported as: \"" + nodeController.currentFileName + ".json\", which differs from the given export name: \"" + customExportNameField.text + "\".json. Please ensure this is correct, or leave the Custom Export Name blank to export using the previous import name.";
+                exportOkay = true;
+            }
         }
 
-        //if there is a new non-blank filename, that doesn't match the current one, show a warning
-        else if (customExportNameField.text != "" && customExportNameField.text != nodeController.currentFileName) {
-            statusText.color = yellow;
-            statusText.text = "This file was imported as: \"" + nodeController.currentFileName + "\", which differs from the given export name: \"" + customExportNameField.text + "\". Please ensure this is correct, or leave the Custom Export Name blank to export using the previous import name.";
-            exportOkay = true;
+        //else no file is loaded
+        else {
+            //if there's no export name, error! Otherwise, ok.
+            if (customExportNameField.text == "") {
+                statusText.color = red;
+                statusText.text = "This is a new file. To export, give a new file name.";
+                exportOkay = false;
+            }
+            else {
+                statusText.color = green;
+                statusText.text = "This new file will be exported as: \"" + customExportNameField.text + "\".json";
+                exportOkay = true;
+            }
         }
 
-        //if this isn't an existing file and there's no export name, error!
-        else if (customExportNameField.text == "" && nodeController.currentFileName == "") {
-            statusText.color = red;
-            statusText.text = "This is a new file. To export, give a new file name.";
-            exportOkay = false;
-        }
+
+
 
     }
 
@@ -68,7 +82,9 @@ public class ExportPopupWindow : MonoBehaviour {
     }
 
     public void ExportFile() {
-        if(exportOkay)
+        if (exportOkay) {
             nodeController.Export(customExportNameField.text == "" ? nodeController.currentFileName : customExportNameField.text);
+            CloseWindow();
+        }
     }
 }

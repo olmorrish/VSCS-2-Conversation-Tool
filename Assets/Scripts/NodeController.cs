@@ -24,6 +24,7 @@ public class NodeController : MonoBehaviour {
     //[Header("Data")]
     private string headNodeID;
     public string currentFileName;
+    public bool fileLoaded; 
 
     //support data for topological sort; reset each time
     private Dictionary<string, bool> temporaryMarks;
@@ -31,7 +32,8 @@ public class NodeController : MonoBehaviour {
     private List<ChatNode> sortedNodes;
 
     public void Awake() {
-        currentFileName = string.Empty;
+        currentFileName = String.Empty;
+        fileLoaded = false;
     }
 
     #region Button Fuctions
@@ -199,6 +201,10 @@ public class NodeController : MonoBehaviour {
 
         File.WriteAllText(saveFilePath, allNodes.ToString());
 
+        //set the export name as the current file
+        currentFileName = exportFileName;
+        fileLoaded = true;
+
         outputText.AddLine("SUCCESS! Exported file as \"" + exportFileName + ".json\" (in AppData).");
     }
 
@@ -232,6 +238,7 @@ public class NodeController : MonoBehaviour {
         //file exists; load in "<thisPart>.json" part of the name as current
         string[] pathSplit = loadFilePath.Split('\\');
         currentFileName = pathSplit[pathSplit.Length - 1].Split('.')[0];
+        fileLoaded = true;
 
         JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
 
@@ -467,7 +474,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnExportWindow() {
         GameObject newWindow = Instantiate(exportWindowPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -3);
     }
 
     /// <summary>
