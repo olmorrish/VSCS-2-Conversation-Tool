@@ -16,6 +16,8 @@ public class NodeController : MonoBehaviour {
     public Toggle autoGenerateNodeIDs;
     public GameObject importWindowPrefab;
     public GameObject exportWindowPrefab;
+    public GameObject quitConfirmPopupPrefab;
+    public GameObject newFileConfirmPopupPrefab;
 
     [Header("Export Parameters")]
     public bool useRealGamePath;
@@ -93,6 +95,53 @@ public class NodeController : MonoBehaviour {
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
         newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("Note");
     }
+
+    /// <summary>
+    /// Spawns the export window. Called by button.
+    /// </summary>
+    public void SpawnExportWindow() {
+        GameObject newWindow = Instantiate(exportWindowPrefab, gameObject.transform);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -3);
+    }
+
+    /// <summary>
+    /// Spawns the import window. Called by button.
+    /// </summary>
+    public void SpawnImportWindow() {
+        GameObject newWindow = Instantiate(importWindowPrefab, gameObject.transform);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
+    }
+
+    public void SpawnQuitConfirmWindow() {
+        GameObject newWindow = Instantiate(quitConfirmPopupPrefab, gameObject.transform);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -4);
+    }
+
+    public void SpawnNewFileConfirmWindow() {
+        GameObject newWindow = Instantiate(newFileConfirmPopupPrefab, gameObject.transform);
+        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -5);
+    }
+
+    public void OpenFileLocation() {
+        System.Diagnostics.Process.Start(vscsPath);
+    }
+
+    public void NewFile() {
+        ClearScreen();
+        currentFileName = "";
+        fileLoaded = false;
+    }
+
+    /// <summary>
+    /// Quits the application.
+    /// </summary>
+    public void QuitApplication() {
+        Application.Quit();
+    }
+
+    #endregion
+
+    #region Import and Export
 
     /// <summary>
     /// Copy spawner, called by copy button on ChatNode. Tells new ChatnNode to copy the passed one.
@@ -462,29 +511,6 @@ public class NodeController : MonoBehaviour {
             node.SetActive(false);
             Destroy(node);
         }
-    }
-
-    /// <summary>
-    /// Spawns the export window. Called by button.
-    /// </summary>
-    public void SpawnExportWindow() {
-        GameObject newWindow = Instantiate(exportWindowPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -3);
-    }
-
-    /// <summary>
-    /// Spawns the import window. Called by button.
-    /// </summary>
-    public void SpawnImportWindow() {
-        GameObject newWindow = Instantiate(importWindowPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
-    }
-
-    /// <summary>
-    /// Quits the application.
-    /// </summary>
-    public void QuitApplication() {
-        Application.Quit();
     }
 
     #endregion
