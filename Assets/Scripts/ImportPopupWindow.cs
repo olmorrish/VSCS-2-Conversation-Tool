@@ -36,7 +36,7 @@ public class ImportPopupWindow : MonoBehaviour {
             GameObject newButton = Instantiate(importButtonPrefab, contentGrid);
             string[] fileNameSeparated = file.Split('\\');
             string fileName = fileNameSeparated[fileNameSeparated.Length-1].Split('.')[0];
-            newButton.GetComponent<ImportButton>().Init(fileName);
+            newButton.GetComponent<ImportButton>().Init(fileName, this);
         }
     }
 

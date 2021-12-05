@@ -6,13 +6,15 @@ public class ImportButton : MonoBehaviour {
 
     public TMPro.TextMeshProUGUI buttonTextmesh; 
     private NodeController nodeController;
+    private ImportPopupWindow importWindow;
     private string fileName;
 
     /// <summary>
     /// Initializes the button. Called by ImportPopupWindow when it spawns the button.
     /// </summary>
     /// <param name="fileName"></param>
-    public void Init(string fileName) {
+    public void Init(string fileName, ImportPopupWindow importWindow) {
+        this.importWindow = importWindow;
         nodeController = GameObject.Find("NodeController").GetComponent<NodeController>();
         buttonTextmesh.text = fileName;
         this.fileName = fileName;
@@ -23,6 +25,7 @@ public class ImportButton : MonoBehaviour {
     /// </summary>
     public void Import() {
         nodeController.Import(fileName);
+        importWindow.CloseWindow();
     }
     
 }

@@ -36,6 +36,26 @@ public class NodeController : MonoBehaviour {
         fileLoaded = false;
     }
 
+    public void Update() {
+        if (Input.GetKey(KeyCode.LeftControl)) {
+            if (Input.GetKeyDown(KeyCode.S)) {
+                if (currentFileName != "")
+                    Export(currentFileName);
+                else
+                    outputText.AddLine("ERROR: Cannot save an unnamed file! Please use export window for the inital save.");
+            }
+
+            else if (Input.GetKeyDown(KeyCode.N))
+                SpawnNewChatNode();
+            else if (Input.GetKeyDown(KeyCode.I))
+                SpawnImportWindow();
+            else if (Input.GetKeyDown(KeyCode.E))
+                SpawnExportWindow();
+            //else if (Input.GetKeyDown(KeyCode.Q))
+            //    SpawnQuitWindow();
+        }
+    }
+
     #region Button Fuctions
 
     /// <summary>
@@ -62,8 +82,16 @@ public class NodeController : MonoBehaviour {
     public void SpawnNewBranchOnPlayerInputChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
         newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
-
         newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("BranchOnPlayerInput");
+    }
+
+    /// <summary>
+    /// Spawn a new Note ChatNode in the center of the view.
+    /// </summary>
+    public void SpawnNewNoteNode() {
+        GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
+        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("Note");
     }
 
     /// <summary>
@@ -71,10 +99,8 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     /// <param name="toCopy">The GameObject of the ChatNode to copy. Param is calling object.</param>
     public void SpawnNewChatNodeFromCopy(GameObject toCopy) {
-
         GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
         newChatNodeObject.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
-
         ChatNode newChatNode = newChatNodeObject.GetComponent<ChatNode>();
         newChatNode.CopyOtherNodeData(toCopy.GetComponent<ChatNode>());
     }
@@ -83,11 +109,8 @@ public class NodeController : MonoBehaviour {
     /// Export all nodes to JSON.
     /// </summary>
     public void Export(string exportFileName) {
-
-        //autoID the nodes; doesn't change head node or overwrite it
-        if (autoGenerateNodeIDs.isOn) {
+        if (autoGenerateNodeIDs.isOn)
             AutoGenerateAllNodeIDs();
-        }
 
         //find the head node
         string headNodeID = headIDInputField.text;
@@ -335,9 +358,6 @@ public class NodeController : MonoBehaviour {
         //iterate over all the spawned chatnodes in the scene and connect them
         GameObject[] allChatNodes = GameObject.FindGameObjectsWithTag("Node");
         foreach(GameObject n in allChatNodes) {
-
-            //Debug.Log("Attempting to reconcile connections for node + " + n.GetComponent<ChatNode>().GetID() + "...");
-
             //get the ids of the next node
             ChatNode node = n.GetComponent<ChatNode>();
             string nodeID = node.GetID();
@@ -380,9 +400,7 @@ public class NodeController : MonoBehaviour {
     /// This will not change the head node ID, nor will i rename another node to have the same ID as the head node.
     /// </summary>
     public void AutoGenerateAllNodeIDs() {
-
         string headNodeID = headIDInputField.text;
-
         GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
 
         int i = 0;
@@ -403,7 +421,6 @@ public class NodeController : MonoBehaviour {
                 thisNodeIDField.text = i.ToString();
                 i++;
             }
-
         }
 
         outputText.AddLine("New ChatNode IDs have been generated. The head node ID has not overwritten or duplicated.");
@@ -414,7 +431,6 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     /// <returns>True if there is a duplicate node ID.</returns>
     private bool CheckForDuplicateIDs() {
-
         GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
 
         List<string> allIDs = new List<string>();
@@ -521,7 +537,6 @@ public class NodeController : MonoBehaviour {
         permanentMarks[n.GetID()] = true;
 
         sortedNodes.Insert(0, n);
-
     }
 
     /// <summary>
