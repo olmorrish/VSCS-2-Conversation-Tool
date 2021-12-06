@@ -45,4 +45,8 @@ public class VariantPanelNote : VariantPanel {
     public override List<ConnectionNub> GetNubs() {
         return new List<ConnectionNub> { };
     }
+
+    public bool IsMarkedTodo() {
+        return toggle.isOn;
+    }
 }

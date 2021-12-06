@@ -153,6 +153,15 @@ public class ChatNode : MonoBehaviour {
     }
 
     /// <summary>
+    /// Gets the ChatNodeType of this node. Used when trying to locate and count note nodes. 
+    /// </summary>
+    /// <returns></returns>
+    public ChatNodeType GetChatNodeType() {
+        string text = nodetypeDropdown.options[nodetypeDropdown.value].text;
+        return (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
+    }
+
+    /// <summary>
     /// Called by click of Copy button. Sends self over to NodeController, so that a new node can copy data from this one.
     /// </summary>
     public void DuplicateNode() {
@@ -263,7 +272,6 @@ public class ChatNode : MonoBehaviour {
 
         //spawn in the variantpanel, then 
         NodeTypeSelected(nodetypeDropdown);
-
     }
 
     /// <summary>

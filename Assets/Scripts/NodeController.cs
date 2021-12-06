@@ -13,6 +13,7 @@ public class NodeController : MonoBehaviour {
     public GameObject chatNodePrefab;
     public TMPro.TMP_InputField headIDInputField;
     public OutputText outputText;
+    public TMPro.TextMeshProUGUI todoCountText;
     public GameObject importWindowPrefab;
     public GameObject exportWindowPrefab;
     public GameObject quitConfirmPopupPrefab;
@@ -35,6 +36,7 @@ public class NodeController : MonoBehaviour {
     public void Awake() {
         currentFileName = String.Empty;
         fileLoaded = false;
+        InvokeRepeating("UpdateTodoCount", 2, 5);
     }
 
     public void Update() {
@@ -276,6 +278,7 @@ public class NodeController : MonoBehaviour {
         fileLoaded = true;
 
         outputText.AddLine("SUCCESS! Exported file as \"" + exportFileName + ".json\" (in AppData).");
+        UpdateTodoCount();
     }
 
     /// <summary>
@@ -423,6 +426,7 @@ public class NodeController : MonoBehaviour {
         }
 
         outputText.AddLine("SUCCESS! Imported file as \"" + importFileName + ".json\".");
+        UpdateTodoCount();
     }
 
     /// <summary>
@@ -509,6 +513,21 @@ public class NodeController : MonoBehaviour {
             node.SetActive(false);
             Destroy(node);
         }
+    }
+
+    private void UpdateTodoCount() {
+        var allChatNodes = GameObject.FindGameObjectsWithTag("Node").Select(e => e.GetComponent<ChatNode>());
+
+        int count = 0;
+        foreach (ChatNode chatNode in allChatNodes) {
+            if(chatNode.GetChatNodeType() == ChatNodeType.Note) {
+                VariantPanelNote note = (VariantPanelNote)chatNode.currentVariantPanel;
+                if (note.IsMarkedTodo())
+                    count++;
+            }
+        }
+
+        todoCountText.text = count > 0 ? "TODO Count: " + count : "No TODO Notes";
     }
 
     #endregion
