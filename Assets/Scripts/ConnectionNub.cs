@@ -7,6 +7,7 @@ public class ConnectionNub : MonoBehaviour {
     public ConnectionNub connectedNub;
     private SpriteRenderer spriteRenderer;
     private LineRenderer line;
+    private Color defaultColor;
 
     private bool mouseHeldDown;
     private float clickPosX;
@@ -17,6 +18,7 @@ public class ConnectionNub : MonoBehaviour {
         mouseHeldDown = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
         line = GetComponent<LineRenderer>();
+        defaultColor = spriteRenderer.color;
     }
 
     // Update is called once per frame
@@ -39,7 +41,7 @@ public class ConnectionNub : MonoBehaviour {
         }
 
         //nubs change colour to indicate connection
-        spriteRenderer.color = connectedNub == null ? Color.white : Color.cyan;
+        spriteRenderer.color = connectedNub == null ? defaultColor : Color.cyan;
     }
 
     /// <summary>

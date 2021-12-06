@@ -41,25 +41,34 @@ public class NodeController : MonoBehaviour {
 
     public void Update() {
         if (Input.GetKey(KeyCode.LeftControl)) {
-            if (Input.GetKeyDown(KeyCode.S)) {
+
+            //CTRL+SHIFT
+            if (Input.GetKey(KeyCode.LeftShift)) {
+                if (Input.GetKeyDown(KeyCode.N))    //CTRL+SHIFT+ N => New File
+                    SpawnNewFileConfirmPopup(); 
+            }
+
+            //CTRL Only
+            else if (Input.GetKeyDown(KeyCode.S)) {
                 if (currentFileName != "")
-                    Export(currentFileName);
+                    Export(currentFileName);    
                 else
                     outputText.AddLine("ERROR: Cannot save an unnamed file! Please use export window for the inital save.");
             }
-
             else if (Input.GetKeyDown(KeyCode.N))
                 SpawnNewChatNode();
             else if (Input.GetKeyDown(KeyCode.I))
                 SpawnImportWindow();
             else if (Input.GetKeyDown(KeyCode.E))
                 SpawnExportWindow();
-            //else if (Input.GetKeyDown(KeyCode.Q))
-            //    SpawnQuitWindow();
+            else if (Input.GetKeyDown(KeyCode.Q))
+                SpawnQuitConfirmPopup();
+            else if (Input.GetKeyDown(KeyCode.Q))
+                SpawnQuitConfirmPopup();
         }
     }
 
-    #region Button Fuctions
+    #region Window and Popup Spawns
 
     /// <summary>
     /// Spawn a new blank ChatNode in the center of the view.
@@ -113,15 +122,24 @@ public class NodeController : MonoBehaviour {
         newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
     }
 
-    public void SpawnQuitConfirmWindow() {
+    /// <summary>
+    /// Spawns a popup for the player to confirm that they want to quit.
+    /// </summary>
+    public void SpawnQuitConfirmPopup() {
         GameObject newWindow = Instantiate(quitConfirmPopupPrefab, gameObject.transform);
         newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -4);
     }
 
-    public void SpawnNewFileConfirmWindow() {
+    /// <summary>
+    /// Spawns a popup for the player to confirm that they want to start a new file.
+    /// </summary>
+    public void SpawnNewFileConfirmPopup() {
         GameObject newWindow = Instantiate(newFileConfirmPopupPrefab, gameObject.transform);
         newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -5);
     }
+
+    #endregion
+    #region Non-Spawn Button Functions
 
     public void OpenFileLocation() {
         System.Diagnostics.Process.Start(vscsPath);
@@ -141,7 +159,6 @@ public class NodeController : MonoBehaviour {
     }
 
     #endregion
-
     #region Import and Export
 
     /// <summary>
@@ -531,7 +548,6 @@ public class NodeController : MonoBehaviour {
     }
 
     #endregion
-
     #region Topological Sort Functions
 
     /* 
