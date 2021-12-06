@@ -13,7 +13,6 @@ public class NodeController : MonoBehaviour {
     public GameObject chatNodePrefab;
     public TMPro.TMP_InputField headIDInputField;
     public OutputText outputText;
-    public Toggle autoGenerateNodeIDs;
     public GameObject importWindowPrefab;
     public GameObject exportWindowPrefab;
     public GameObject quitConfirmPopupPrefab;
@@ -158,8 +157,7 @@ public class NodeController : MonoBehaviour {
     /// Export all nodes to JSON.
     /// </summary>
     public void Export(string exportFileName) {
-        if (autoGenerateNodeIDs.isOn)
-            AutoGenerateAllNodeIDs();
+        AutoGenerateAllNodeIDs();
 
         //find the head node
         string headNodeID = headIDInputField.text;
