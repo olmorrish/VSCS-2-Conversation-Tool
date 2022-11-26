@@ -195,12 +195,10 @@ public class NodeController : MonoBehaviour {
 
         if (headNodeID.Equals("")) {
             outputText.AddLine("ERROR EXPORTING: No head node ID was specified.");
-            Debug.LogWarning("ERROR EXPORTING: No head node ID was specified.");
             return;
         }
         if (exportFQN.Equals("")) {
             outputText.AddLine("ERROR EXPORTING: No export name was specified.");
-            Debug.LogWarning("ERROR EXPORTING: No export name was specified.");
             return;
         }
 
@@ -218,7 +216,6 @@ public class NodeController : MonoBehaviour {
 
         if(headNode == null) {
             outputText.AddLine("ERROR EXPORTING: Head node with ID \"" + headNodeID + "\" could not be found.");
-            Debug.LogWarning("ERROR EXPORTING: Head node with ID \"" + headNodeID + "\" could not be found.");
             return;
         }
 
@@ -291,9 +288,7 @@ public class NodeController : MonoBehaviour {
             //... then add it to the full node array
             allNodes.Add(singleNodeJSONObj);
         }
-
-        Debug.Log(allNodes.ToString());
-
+        
         //write the JSON
         File.WriteAllText(exportFQN, allNodes.ToString());
 
@@ -301,7 +296,7 @@ public class NodeController : MonoBehaviour {
         currentFileFQN = exportFQN;
         fileLoaded = true;
 
-        outputText.AddLine("SUCCESS! Exported file as \"" + exportFQN + "\".");
+        outputText.AddLine("SUCCESS! Exported file to \"" + exportFQN + "\".");
         UpdateTodoCount();
     }
 
@@ -313,7 +308,6 @@ public class NodeController : MonoBehaviour {
         
         if (importFileFQN.Equals("")) {
             outputText.AddLine("ERROR IMPORTING: No import name was specified.");
-            Debug.LogWarning("ERROR IMPORTING: No import name was specified.");
             return;
         }
 
@@ -321,7 +315,6 @@ public class NodeController : MonoBehaviour {
         //no need to prepend resources path; this is called by the import window which has the FQN
         if (!File.Exists(importFileFQN)) {
             outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + importFileFQN + "\"");
-            Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + importFileFQN + "\"");
             return;
         }
 
@@ -441,7 +434,7 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-        outputText.AddLine("SUCCESS! Imported file as \"" + importFileFQN + ".json\".");
+        outputText.AddLine("SUCCESS! Imported file from \"" + importFileFQN + "\".");
         UpdateTodoCount();
     }
 
@@ -508,7 +501,6 @@ public class NodeController : MonoBehaviour {
             string id = nodeObj.GetComponent<ChatNode>().GetID();
             if (allIDs.Contains(id)) {
                 outputText.AddLine("ERROR EXPORTING: The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
-                Debug.LogWarning("The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
                 return true;
             }
             else {
@@ -581,7 +573,6 @@ public class NodeController : MonoBehaviour {
             return;
         if (temporaryMarks[n.GetID()]) {
             outputText.AddLine("ERROR EXPORTING: A cycle in the graph was detected. Conversations must be directed acyclic graphs (DAGs).");
-            Debug.LogError("ERROR EXPORTING: A cycle in the graph was detected. Conversations must be directed acyclic graphs (DAGs).");
             return;
         }
 

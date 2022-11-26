@@ -14,7 +14,6 @@ public class OutputText : MonoBehaviour {
     }
 
     private void Update() {
-
         float r = Mathf.Lerp(textMesh.color.r, Color.white.r, fadeSpeed);
         float g = Mathf.Lerp(textMesh.color.g, Color.white.g, fadeSpeed);
         float b = Mathf.Lerp(textMesh.color.b, Color.white.b, fadeSpeed);
@@ -26,12 +25,18 @@ public class OutputText : MonoBehaviour {
     public void AddLine(string line) {
         textMesh.text = line + "\n" + textMesh.text;
 
-        if (line.Contains("ERROR"))
+        if (line.Contains("ERROR")) {
             textMesh.color = Color.red;
-        else if (line.Contains("SUCCESS"))
+            Debug.LogWarning(line);
+        }
+        else if (line.Contains("SUCCESS")) {
             textMesh.color = Color.green;
-        else
+            Debug.Log(line);
+        }
+        else {
             textMesh.color = Color.yellow;
+            Debug.Log(line);
+        }
 
     }
 }
