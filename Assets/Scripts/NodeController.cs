@@ -20,12 +20,11 @@ public class NodeController : MonoBehaviour {
     public GameObject newFileConfirmPopupPrefab;
 
     [Header("Export Parameters")]
-    public bool useRealGamePath;
-    public string vscsPath = "C:\\Users\\olive\\Documents\\Unity Projects\\VSCS-2\\Assets\\Resources";
+    private const string RESOURCES_PATH = "C:\\Users\\olive\\Documents\\Unity Projects\\VSCS-2\\Assets\\Resources";
 
     //[Header("Data")]
     private string headNodeID;
-    public string currentFileName;
+    public string currentFileFQN;
     public bool fileLoaded; 
 
     //support data for topological sort; reset each time
@@ -33,8 +32,12 @@ public class NodeController : MonoBehaviour {
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
 
+    public string getResourcesPath() {
+        return RESOURCES_PATH;
+    }
+
     public void Awake() {
-        currentFileName = String.Empty;
+        currentFileFQN = String.Empty;
         fileLoaded = false;
         InvokeRepeating("UpdateTodoCount", 2, 5);
     }
@@ -50,8 +53,8 @@ public class NodeController : MonoBehaviour {
 
             //CTRL Only
             else if (Input.GetKeyDown(KeyCode.S)) {
-                if (currentFileName != "")
-                    Export(currentFileName);    
+                if (currentFileFQN != "")
+                    Export();
                 else
                     outputText.AddLine("ERROR: Cannot save an unnamed file! Please use export window for the inital save.");
             }
@@ -142,12 +145,12 @@ public class NodeController : MonoBehaviour {
     #region Non-Spawn Button Functions
 
     public void OpenFileLocation() {
-        System.Diagnostics.Process.Start(vscsPath);
+        System.Diagnostics.Process.Start(RESOURCES_PATH);
     }
 
     public void NewFile() {
         ClearScreen();
-        currentFileName = "";
+        currentFileFQN = "";
         fileLoaded = false;
     }
 
@@ -172,12 +175,21 @@ public class NodeController : MonoBehaviour {
         newChatNode.CopyOtherNodeData(toCopy.GetComponent<ChatNode>());
     }
 
+    public void ExportNewFile(string newName) {
+        Export(RESOURCES_PATH + "\\" + newName + ".json"); //the resources folder in the full game);
+    }
+
+    public void Export() {
+        Export(currentFileFQN);
+    }
+
     /// <summary>
     /// Export all nodes to JSON.
     /// </summary>
-    public void Export(string exportFileName) {
+    /// <param name="exportFQN">FQN to write the file to.</param>
+    public void Export(string exportFQN) {
         AutoGenerateAllNodeIDs();
-
+        
         //find the head node
         string headNodeID = headIDInputField.text;
 
@@ -186,7 +198,7 @@ public class NodeController : MonoBehaviour {
             Debug.LogWarning("ERROR EXPORTING: No head node ID was specified.");
             return;
         }
-        else if (exportFileName.Equals("")) {
+        if (exportFQN.Equals("")) {
             outputText.AddLine("ERROR EXPORTING: No export name was specified.");
             Debug.LogWarning("ERROR EXPORTING: No export name was specified.");
             return;
@@ -283,54 +295,41 @@ public class NodeController : MonoBehaviour {
         Debug.Log(allNodes.ToString());
 
         //write the JSON
-        string saveFilePath = Application.persistentDataPath + "\\" + exportFileName + ".json";
-        if (useRealGamePath) {
-            saveFilePath = vscsPath + "\\" + exportFileName + ".json"; //the resources folder in the full game
-        }
-
-        File.WriteAllText(saveFilePath, allNodes.ToString());
+        File.WriteAllText(exportFQN, allNodes.ToString());
 
         //set the export name as the current file
-        currentFileName = exportFileName;
+        currentFileFQN = exportFQN;
         fileLoaded = true;
 
-        outputText.AddLine("SUCCESS! Exported file as \"" + exportFileName + ".json\" (in AppData).");
+        outputText.AddLine("SUCCESS! Exported file as \"" + exportFQN + "\".");
         UpdateTodoCount();
     }
 
     /// <summary>
     /// Imports a file, given the entered file name. This clears the scene then populates it with the saved ChatNodes.
     /// </summary>
-    public void Import(string importFileName) {
-
+    public void Import(string importFileFQN) {
         ClearScreen();
-
-        Vector2 oldFileCoordinates = new Vector2(-60f, 0f); //a running coordinate that spreads out nodes if they are from a file where they were not stored
-
-        if (importFileName.Equals("")) {
+        
+        if (importFileFQN.Equals("")) {
             outputText.AddLine("ERROR IMPORTING: No import name was specified.");
             Debug.LogWarning("ERROR IMPORTING: No import name was specified.");
             return;
         }
 
         //load in the data
-        string loadFilePath = Application.persistentDataPath + "\\" + importFileName + ".json";
-        if (useRealGamePath) {
-            loadFilePath = vscsPath + "\\" + importFileName + ".json"; //the resources folder in the full game
-        }
-
-        if (!File.Exists(loadFilePath)) {
-            outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + importFileName + ".json \"");
-            Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + importFileName + ".json \"");
+        //no need to prepend resources path; this is called by the import window which has the FQN
+        if (!File.Exists(importFileFQN)) {
+            outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + importFileFQN + "\"");
+            Debug.LogWarning("ERROR IMPORTING: Could not find file: \"" + importFileFQN + "\"");
             return;
         }
 
-        //file exists; load in "<thisPart>.json" part of the name as current
-        string[] pathSplit = loadFilePath.Split('\\');
-        currentFileName = pathSplit[pathSplit.Length - 1].Split('.')[0];
+        //file exists; remember the FQN for quick export
+        currentFileFQN = importFileFQN;
         fileLoaded = true;
 
-        JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(loadFilePath));
+        JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(importFileFQN));
 
         //flag and string for post-processed contents
         bool addContents = false;
@@ -442,7 +441,7 @@ public class NodeController : MonoBehaviour {
             }
         }
 
-        outputText.AddLine("SUCCESS! Imported file as \"" + importFileName + ".json\".");
+        outputText.AddLine("SUCCESS! Imported file as \"" + importFileFQN + ".json\".");
         UpdateTodoCount();
     }
 

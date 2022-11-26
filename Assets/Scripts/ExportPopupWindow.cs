@@ -27,8 +27,8 @@ public class ExportPopupWindow : MonoBehaviour {
         }
 
         nodeController = GameObject.Find("NodeController").GetComponent<NodeController>();
-        if (nodeController.currentFileName != string.Empty)
-            detectedFile.text = "The current file is: \"" + nodeController.currentFileName + "\"";
+        if (nodeController.currentFileFQN != string.Empty)
+            detectedFile.text = "The current file is: \"" + nodeController.currentFileFQN + "\"";
         else {
             detectedFile.text = "There is no file currently loaded.";
         }
@@ -43,16 +43,16 @@ public class ExportPopupWindow : MonoBehaviour {
         if (nodeController.fileLoaded) {
 
             //if the field is blank or matches, export with the current name
-            if (customExportNameField.text == "" || customExportNameField.text == nodeController.currentFileName) {
+            if (customExportNameField.text == "") {
                 statusText.color = green;
-                statusText.text = "This file will be exported with previous name as: \"" + nodeController.currentFileName + "\".json";
+                statusText.text = "This file will be exported to its previous file path as: \"" + nodeController.currentFileFQN;
                 exportOkay = true;
             }
 
-            //otherwise, there is a new filename that doesn't match, so show a warning
+            //otherwise we're exporting an existing file under a new name
             else {
                 statusText.color = yellow;
-                statusText.text = "This file was imported as: \"" + nodeController.currentFileName + ".json\", which differs from the given export name: \"" + customExportNameField.text + "\".json. Please ensure this is correct, or leave the Custom Export Name blank to export using the previous import name.";
+                statusText.text = "This file was imported as: \"" + nodeController.currentFileFQN + "\". Make sure you want to export to the Resources folder as: \"" + customExportNameField.text + ".json\". Leave the Custom Export Name blank to export using the previous import name and path.";
                 exportOkay = true;
             }
         }
@@ -67,14 +67,10 @@ public class ExportPopupWindow : MonoBehaviour {
             }
             else {
                 statusText.color = green;
-                statusText.text = "This new file will be exported as: \"" + customExportNameField.text + "\".json";
+                statusText.text = "This new file will be exported to the Resources folder as: \"" + customExportNameField.text + ".json\"";
                 exportOkay = true;
             }
         }
-
-
-
-
     }
 
     public void CloseWindow() {
@@ -83,7 +79,16 @@ public class ExportPopupWindow : MonoBehaviour {
 
     public void ExportFile() {
         if (exportOkay) {
-            nodeController.Export(customExportNameField.text == "" ? nodeController.currentFileName : customExportNameField.text);
+
+            string customName = customExportNameField.text; 
+
+            if (customName == "") {
+                nodeController.Export();
+            }
+            else {
+                nodeController.ExportNewFile(customName);
+            }
+            
             CloseWindow();
         }
     }

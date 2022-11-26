@@ -25,18 +25,18 @@ public class ImportPopupWindow : MonoBehaviour {
         //find the nodecontroller and set the text for the current file
         nodeController = GameObject.Find("NodeController").GetComponent<NodeController>();
         if (nodeController.fileLoaded)
-            detectedFile.text = "The current file is: \"" + nodeController.currentFileName + "\"";
+            detectedFile.text = "The current file is: \"" + nodeController.currentFileFQN + "\"";
         else {
             detectedFile.text = "There is no file currently loaded.";
             warningMessage.SetActive(false);
         }
 
-        string[] files = Directory.GetFiles(nodeController.vscsPath, "*.json", SearchOption.AllDirectories);
-        foreach (string file in files) {
+        string[] files = Directory.GetFiles(nodeController.getResourcesPath(), "*.json", SearchOption.AllDirectories);
+        foreach (string fileFqn in files) {
             GameObject newButton = Instantiate(importButtonPrefab, contentGrid);
-            string[] fileNameSeparated = file.Split('\\');
-            string fileName = fileNameSeparated[fileNameSeparated.Length-1].Split('.')[0];
-            newButton.GetComponent<ImportButton>().Init(fileName, this);
+            string[] fileNameSeparated = fileFqn.Split('\\');
+            string displayName = fileNameSeparated[fileNameSeparated.Length-1].Split('.')[0];
+            newButton.GetComponent<ImportButton>().Init(fileFqn, displayName, this);
         }
     }
 
