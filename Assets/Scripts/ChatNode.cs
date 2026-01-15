@@ -162,10 +162,10 @@ public class ChatNode : MonoBehaviour {
     }
 
     /// <summary>
-    /// Called by click of Copy button. Sends self over to NodeController, so that a new node can copy data from this one.
+    /// Called by click of Clone button. Sends self over to NodeController, so that a new node can copy data from this one.
     /// </summary>
-    public void DuplicateNode() {
-        GameObject.Find("NodeController").GetComponent<NodeController>().SpawnNewChatNodeFromCopy(this.gameObject);
+    public void CloneNode() {
+        GameObject.Find("NodeController").GetComponent<NodeController>().SpawnChatNodeClone(gameObject);
     }
 
     /// <summary>

@@ -165,18 +165,18 @@ public class NodeController : MonoBehaviour {
     #region Import and Export
 
     /// <summary>
-    /// Copy spawner, called by copy button on ChatNode. Tells new ChatnNode to copy the passed one.
+    /// Clone spawner, called by clone button on ChatNode. Tells new ChatNode to clone the passed one.
     /// </summary>
-    /// <param name="toCopy">The GameObject of the ChatNode to copy. Param is calling object.</param>
-    public void SpawnNewChatNodeFromCopy(GameObject toCopy) {
-        GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
+    /// <param name="toClone">The GameObject of the ChatNode to clone. Param is calling object.</param>
+    public void SpawnChatNodeClone(GameObject toClone) {
+        GameObject newChatNodeObject = Instantiate(chatNodePrefab, transform);
         newChatNodeObject.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
         ChatNode newChatNode = newChatNodeObject.GetComponent<ChatNode>();
-        newChatNode.CopyOtherNodeData(toCopy.GetComponent<ChatNode>());
+        newChatNode.CopyOtherNodeData(toClone.GetComponent<ChatNode>());
     }
 
     public void ExportNewFile(string newName) {
-        Export(RESOURCES_PATH + "\\" + newName + ".json"); //the resources folder in the full game);
+        Export(RESOURCES_PATH + "\\" + newName + ".json"); // the resources folder in the full game
     }
 
     public void Export() {
