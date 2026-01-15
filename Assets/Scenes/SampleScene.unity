@@ -503,7 +503,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VSCS-II Convo Tool v1.3.3
+  m_text: VSCS Convo Tool v2.0.0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 173aeb52a2b93204297dd40171c449ee, type: 2}
   m_sharedMaterial: {fileID: -683063112006007929, guid: 173aeb52a2b93204297dd40171c449ee,
@@ -1488,7 +1488,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cdf9aacd43d30a5478d48a6826f2a3f5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebc3a4ed43e4d7840a889256fdbd59cf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
