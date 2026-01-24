@@ -15,10 +15,15 @@ public class Config : MonoBehaviour  {
     
     // Data from config.json
     private string version; // version of the convo tool, ex: 1.0.0
+    private string convoFolderFilePath; // folder to read/write convo file to, in the actual game project
     
     
     public string GetVersion() {
         return version;
+    }
+    
+    public string GetConvoFolderFilePath() {
+        return convoFolderFilePath;
     }
 
     private void LoadConfigData() {
@@ -32,6 +37,7 @@ public class Config : MonoBehaviour  {
 
             JSONNode buildConfigSection = configJSON["build"];
             version = buildConfigSection["version"].Value;
+            convoFolderFilePath = buildConfigSection["convoFolderFilePath"].Value;
 
             Debug.Log("Config data was loaded successfully for version " + version + ".");
         }

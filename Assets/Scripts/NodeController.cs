@@ -20,7 +20,7 @@ public class NodeController : MonoBehaviour {
     public GameObject newFileConfirmPopupPrefab;
 
     [Header("Export Parameters")]
-    private const string RESOURCES_PATH = "C:\\Users\\olive\\Documents\\Unity Projects\\VSCS-2\\Assets\\Resources";
+    private string convoFolderFilePath;
 
     //[Header("Data")]
     private string headNodeID;
@@ -32,14 +32,14 @@ public class NodeController : MonoBehaviour {
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
 
-    public string getResourcesPath() {
-        return RESOURCES_PATH;
-    }
-
     public void Awake() {
         currentFileFQN = String.Empty;
         fileLoaded = false;
         InvokeRepeating("UpdateTodoCount", 2, 5);
+    }
+
+    public void Start() {
+        convoFolderFilePath = Config.instance.GetConvoFolderFilePath();
     }
 
     public void Update() {
@@ -145,7 +145,7 @@ public class NodeController : MonoBehaviour {
     #region Non-Spawn Button Functions
 
     public void OpenFileLocation() {
-        System.Diagnostics.Process.Start(RESOURCES_PATH);
+        System.Diagnostics.Process.Start(convoFolderFilePath);
     }
 
     public void NewFile() {
@@ -176,7 +176,7 @@ public class NodeController : MonoBehaviour {
     }
 
     public void ExportNewFile(string newName) {
-        Export(RESOURCES_PATH + "\\" + newName + ".json"); // the resources folder in the full game
+        Export(convoFolderFilePath + "\\" + newName + ".json"); // the resources folder in the full game
     }
 
     public void Export() {

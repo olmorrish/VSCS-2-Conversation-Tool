@@ -8,7 +8,7 @@ public class ImportPopupWindow : MonoBehaviour {
     private NodeController nodeController;
     public GameObject importButtonPrefab;
     public Transform contentGrid;
-    private static ImportPopupWindow instance; //importwindow is a singleton, but new instances take precendent
+    private static ImportPopupWindow instance; //importPopupWindow is a singleton, but new instances take precedent
     public TMPro.TextMeshProUGUI detectedFile;
     public GameObject warningMessage;
 
@@ -22,7 +22,7 @@ public class ImportPopupWindow : MonoBehaviour {
             instance = this;
         }
 
-        //find the nodecontroller and set the text for the current file
+        //find the nodeController and set the text for the current file
         nodeController = GameObject.Find("NodeController").GetComponent<NodeController>();
         if (nodeController.fileLoaded)
             detectedFile.text = "The current file is: \"" + nodeController.currentFileFQN + "\"";
@@ -31,7 +31,9 @@ public class ImportPopupWindow : MonoBehaviour {
             warningMessage.SetActive(false);
         }
 
-        string[] files = Directory.GetFiles(nodeController.getResourcesPath(), "*.json", SearchOption.AllDirectories);
+        // Find all .json files in the config path and list them 
+        string convoFolderFilePath = Config.instance.GetConvoFolderFilePath();
+        string[] files = Directory.GetFiles(convoFolderFilePath, "*.json", SearchOption.AllDirectories);
         foreach (string fileFqn in files) {
             GameObject newButton = Instantiate(importButtonPrefab, contentGrid);
             string[] fileNameSeparated = fileFqn.Split('\\');
