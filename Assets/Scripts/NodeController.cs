@@ -31,6 +31,9 @@ public class NodeController : MonoBehaviour {
     private Dictionary<string, bool> temporaryMarks;
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
+    
+    //key constants
+    private const string KEY_NODE_POSITION = "nodePosition";
 
     public void Awake() {
         currentFileFQN = String.Empty;
@@ -47,7 +50,7 @@ public class NodeController : MonoBehaviour {
 
             //CTRL+SHIFT
             if (Input.GetKey(KeyCode.LeftShift)) {
-                if (Input.GetKeyDown(KeyCode.N))    //CTRL+SHIFT+ N => New File
+                if (Input.GetKeyDown(KeyCode.N))    //CTRL+SHIFT+N => New File
                     SpawnNewFileConfirmPopup(); 
             }
 
@@ -56,7 +59,7 @@ public class NodeController : MonoBehaviour {
                 if (currentFileFQN != "")
                     Export();
                 else
-                    outputText.AddLine("ERROR: Cannot save an unnamed file! Please use export window for the inital save.");
+                    outputText.AddLine("ERROR: Cannot save an unnamed file! Please use export window for the initial save.");
             }
             else if (Input.GetKeyDown(KeyCode.N))
                 SpawnNewChatNode();
@@ -205,7 +208,7 @@ public class NodeController : MonoBehaviour {
         GameObject[] allChatNodesObjects = GameObject.FindGameObjectsWithTag("Node");
         ChatNode[] allChatNodes = new ChatNode[allChatNodesObjects.Length];
 
-        //iterate over chatnode objects to find the head and get all ChatNode components
+        //iterate over chatNode objects to find the head and get all ChatNode components
         ChatNode headNode = null;
         for (int i = 0; i<allChatNodesObjects.Length; i++) {
             allChatNodes[i] = allChatNodesObjects[i].GetComponent<ChatNode>();
@@ -219,7 +222,7 @@ public class NodeController : MonoBehaviour {
             return;
         }
 
-        //create a convodata then recursively go over each node and get it's data
+        //create a convoData then recursively go over each node and get its data
         ConversationData allData = new ConversationData();
         allData.AddNodeEntry(headNode.GetChatNodeData());
 
@@ -259,7 +262,7 @@ public class NodeController : MonoBehaviour {
             JSONObject singleNodeJSONObj = new JSONObject();
             foreach (KeyValuePair<string, string> pair in nodeEntry) {
 
-                //some fields require array post processing
+                //some fields require array post-processing
                 if (pair.Key == "posx") { positionToJSONArray.x = float.Parse(pair.Value); }
                 else if (pair.Key == "posy") { positionToJSONArray.y = float.Parse(pair.Value); }
 
@@ -283,7 +286,7 @@ public class NodeController : MonoBehaviour {
             JSONArray position = new JSONArray();
             position.Add(positionToJSONArray.x);
             position.Add(positionToJSONArray.y);
-            singleNodeJSONObj.Add("nodeposition", position);
+            singleNodeJSONObj.Add(KEY_NODE_POSITION, position);
 
             //... then add it to the full node array
             allNodes.Add(singleNodeJSONObj);
@@ -349,7 +352,7 @@ public class NodeController : MonoBehaviour {
             float yPos;
 
             //obtain and then set the position
-            JSONArray nodePosition = (JSONArray)chatNodeJSONData["nodeposition"];
+            JSONArray nodePosition = (JSONArray)chatNodeJSONData[KEY_NODE_POSITION];
             xPos = nodePosition[0];
             yPos = nodePosition[1];
             newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
@@ -377,7 +380,7 @@ public class NodeController : MonoBehaviour {
                     addContents = true;
                 }
 
-                else if (key.Equals("nodeposition")) {
+                else if (key.Equals(KEY_NODE_POSITION)) {
                     //do nothing, we already applied this data to the transform and don't need to pass it to the node
                 }
                 else {
@@ -389,7 +392,7 @@ public class NodeController : MonoBehaviour {
             if (addContents) {
                 nodeDataAsDictionary.Add("processedcontents", processedContents);
             }
-            nodeDataAsDictionary.Remove("nodeposition"); //we don't need position anymore, already applied it
+            nodeDataAsDictionary.Remove(KEY_NODE_POSITION); //we don't need position anymore, already applied it
 
             //pass the JSON data to the node so it can populate itself
             newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
