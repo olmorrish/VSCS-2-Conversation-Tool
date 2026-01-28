@@ -11,8 +11,6 @@ public class ConnectionNub : MonoBehaviour {
     private float clickPosX;
     private float clickPosY;
 
-    private const string TAG_NUB = "Nub";
-
     // Start is called before the first frame update
     void Start() {
         mouseHeldDown = false;
@@ -72,7 +70,7 @@ public class ConnectionNub : MonoBehaviour {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D ray = Physics2D.Raycast(mousePos, new Vector3(0,0,1), 10);
         if(ray.collider != null) {
-            if (ray.collider.gameObject.CompareTag(TAG_NUB) && ray.collider.gameObject != this.gameObject) { //check if the collided obj is a non-self nub
+            if (ray.collider.gameObject.CompareTag(Constants.TAG_NUB) && ray.collider.gameObject != this.gameObject) { //check if the collided obj is a non-self nub
                 nubBelow = true;
             }
         }

@@ -202,7 +202,7 @@ public class NodeController : MonoBehaviour {
             return;
         }
 
-        GameObject[] allChatNodesObjects = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] allChatNodesObjects = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE);
         ChatNode[] allChatNodes = new ChatNode[allChatNodesObjects.Length];
 
         // iterate over chatNode objects to find the head and get all ChatNode components
@@ -414,7 +414,7 @@ public class NodeController : MonoBehaviour {
         }
 
         // iterate over all the spawned chatnodes in the scene and connect them
-        GameObject[] allChatNodes = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] allChatNodes = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE);
         foreach(GameObject n in allChatNodes) {
             // get the ids of the next node
             ChatNode node = n.GetComponent<ChatNode>();
@@ -457,7 +457,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void AutoGenerateAllNodeIDs() {
         string headNodeID = headIDInputField.text;
-        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE);
 
         int i = 0;
         foreach(GameObject chatNode in allNodes) {
@@ -487,7 +487,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     /// <returns>True if there is a duplicate node ID.</returns>
     private bool CheckForDuplicateIDs() {
-        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE);
 
         List<string> allIDs = new List<string>();
         foreach (GameObject nodeObj in allNodes) {
@@ -511,7 +511,7 @@ public class NodeController : MonoBehaviour {
     /// Deletes all ChatNodes in the scene. Called before importing a file.
     /// </summary>
     private void ClearScreen() {
-        GameObject[] allNodes = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] allNodes = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE);
 
         foreach (GameObject node in allNodes) {
             node.SetActive(false);
@@ -520,7 +520,7 @@ public class NodeController : MonoBehaviour {
     }
 
     private void UpdateTodoCount() {
-        var allChatNodes = GameObject.FindGameObjectsWithTag("Node").Select(e => e.GetComponent<ChatNode>());
+        var allChatNodes = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE).Select(e => e.GetComponent<ChatNode>());
 
         int count = 0;
         foreach (ChatNode chatNode in allChatNodes) {

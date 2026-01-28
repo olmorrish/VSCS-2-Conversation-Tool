@@ -6,7 +6,7 @@ using UnityEngine;
 public class MultiSelect : MonoBehaviour {
 
 
-    public float distUntilSelect; //distance the mouse has to move while held down to start drawing the selection
+    public float distUntilSelect; // distance the mouse has to move while held down to start drawing the selection
     [HideInInspector] public List<GameObject> selectedNodes;
     LineRenderer[] lines;
     Vector2 mouseDownPos;
@@ -71,14 +71,14 @@ public class MultiSelect : MonoBehaviour {
 
     private List<GameObject> CollectNodesWithin(Vector2 pointA, Vector2 pointB) {
 
-        GameObject[] allChatNodeObjs = GameObject.FindGameObjectsWithTag("Node");
+        GameObject[] allChatNodeObjs = GameObject.FindGameObjectsWithTag(Constants.TAG_NODE);
         List<GameObject> nodesWithinBounds = new List<GameObject>();
 
         foreach (GameObject nodeObj in allChatNodeObjs) {
 
             Vector2 nodePos = nodeObj.transform.position;
 
-            //bottom right of A
+            // bottom right of A
             if (pointB.x > pointA.x && pointB.y < pointA.y) {
                 if (nodePos.x > pointA.x && nodePos.x < pointB.x
                     && nodePos.y < pointA.y && nodePos.y > pointB.y) {
@@ -87,7 +87,7 @@ public class MultiSelect : MonoBehaviour {
                 }
             }
 
-            //top right of A
+            // top right of A
             else if (pointB.x > pointA.x && pointB.y > pointA.y) {
                 if (nodePos.x > pointA.x && nodePos.x < pointB.x
                     && nodePos.y > pointA.y && nodePos.y < pointB.y) {
@@ -98,7 +98,7 @@ public class MultiSelect : MonoBehaviour {
 
             }
 
-            //bottom left of A
+            // bottom left of A
             else if (pointB.x < pointA.x && pointB.y < pointA.y) {
                 if (nodePos.x < pointA.x && nodePos.x > pointB.x
                     && nodePos.y < pointA.y && nodePos.y > pointB.y) {
@@ -107,7 +107,7 @@ public class MultiSelect : MonoBehaviour {
                 }
             }
 
-            //top left of A
+            // top left of A
             else if (pointB.x < pointA.x && pointB.y > pointA.y) {
                 if (nodePos.x < pointA.x && nodePos.x > pointB.x
                     && nodePos.y > pointA.y && nodePos.y < pointB.y) {
