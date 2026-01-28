@@ -217,7 +217,7 @@ public class ChatNode : MonoBehaviour {
         Dictionary<string, string> data = new Dictionary<string, string>();
 
         data.Add("id", idInputField.text);
-        data.Add("nodetype", selectedType.ToString());
+        data.Add(Constants.KEY_NODE_TYPE, selectedType.ToString());
 
         data.Add("posx", transform.position.x.ToString());
         data.Add("posy", transform.position.y.ToString());
@@ -242,18 +242,18 @@ public class ChatNode : MonoBehaviour {
     /// <param name="data"></param>
     public void PopulateChatNodeData(Dictionary<string, string> data) {
 
-        //set the id
-        idInputField.text = data["id"];
-        data.Remove("id");
+        // set the id
+        idInputField.text = data[Constants.KEY_NODE_ID];
+        data.Remove(Constants.KEY_NODE_ID);
 
-        //Set the node type, which spawns in the variant panel
-        SetNodeTypeFromString(data["nodetype"]);
-        data.Remove("nodetype");
+        // set the nodeType, which spawns in the variant panel
+        SetNodeTypeFromString(data[Constants.KEY_NODE_TYPE]);
+        data.Remove(Constants.KEY_NODE_TYPE);
 
-        //pass on the remaining data to populate the variant panel that was set
+        // pass on the remaining data to populate the variant panel that was set
         currentVariantPanel.PopulateVariantPanelData(data);
 
-        //don't handle nub connections here; we have to spawn all desendants first
+        // don't handle nub connections here; we have to spawn all descendants first
     }
 
     /// <summary>
@@ -262,7 +262,7 @@ public class ChatNode : MonoBehaviour {
     /// <param name="typeAsString">The node type as a string.</param>
     public void SetNodeTypeFromString(string typeAsString) {
 
-        //get all options as strings, find the index matching the nodetype value, then set that index
+        // get all options as strings, find the index matching the nodeType value, then set that index
         List<TMPro.TMP_Dropdown.OptionData> menuOptions = nodetypeDropdown.GetComponent<TMPro.TMP_Dropdown>().options;
         List<string> menuOptionsAsStrings = new List<string>();
         foreach (TMPro.TMP_Dropdown.OptionData optionData in menuOptions) {
@@ -270,7 +270,7 @@ public class ChatNode : MonoBehaviour {
         }
         nodetypeDropdown.value = menuOptionsAsStrings.IndexOf(typeAsString);
 
-        //spawn in the variantpanel, then 
+        // spawn in the variant panel, then 
         NodeTypeSelected(nodetypeDropdown);
     }
 
@@ -287,13 +287,12 @@ public class ChatNode : MonoBehaviour {
     /// </summary>
     /// <returns>A list of descendant ChatNodes.</returns>
     public List<ChatNode> GetDescendantNodes() {
-        //descentants are connected via the variant panel; there are sometimes multiple outgoing nubs
+        // descendants are connected via the variant panel; there are sometimes multiple outgoing nubs
         if (currentVariantPanel == null) {
-             Debug.LogError("ERROR EXPORTING: Node \"" + GetID() + "\" does not have a nodetype selected; variant panel is not set and descendants cannot be obtained.");
+             Debug.LogError("ERROR EXPORTING: Node \"" + GetID() + "\" does not have a nodeType selected; variant panel is not set and descendants cannot be obtained.");
             return null;
         }
-        else {
-            return currentVariantPanel.GetDescendantChatNodes();
-        }
+        return currentVariantPanel.GetDescendantChatNodes();
+        
     }
 }

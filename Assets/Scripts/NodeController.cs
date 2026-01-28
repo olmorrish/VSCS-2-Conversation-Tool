@@ -190,7 +190,7 @@ public class NodeController : MonoBehaviour {
     public void Export(string exportFQN) {
         AutoGenerateAllNodeIDs();
         
-        //find the head node
+        // find the head node
         string headNodeID = headIDInputField.text;
 
         if (headNodeID.Equals("")) {
@@ -205,7 +205,7 @@ public class NodeController : MonoBehaviour {
         GameObject[] allChatNodesObjects = GameObject.FindGameObjectsWithTag("Node");
         ChatNode[] allChatNodes = new ChatNode[allChatNodesObjects.Length];
 
-        //iterate over chatNode objects to find the head and get all ChatNode components
+        // iterate over chatNode objects to find the head and get all ChatNode components
         ChatNode headNode = null;
         for (int i = 0; i<allChatNodesObjects.Length; i++) {
             allChatNodes[i] = allChatNodesObjects[i].GetComponent<ChatNode>();
@@ -219,11 +219,11 @@ public class NodeController : MonoBehaviour {
             return;
         }
 
-        //create a convoData then recursively go over each node and get its data
+        // create a convoData then recursively go over each node and get its data
         ConversationData allData = new ConversationData();
         allData.AddNodeEntry(headNode.GetChatNodeData());
 
-        //topologically sort all nodes in the scene; this stores them in sortedNodes
+        // topologically sort all nodes in the scene; this stores them in sortedNodes
         TopologicalSortNodes(allChatNodes, headNode);
 
         List<ChatNode> disconnectedNodes = allChatNodes.Except(sortedNodes).ToList();
@@ -231,39 +231,39 @@ public class NodeController : MonoBehaviour {
             outputText.AddLine("Found " + disconnectedNodes.Count + " disconnected nodes. These nodes may not be accessible within the conversation!");
         }
 
-        //Check for duplicate IDs
+        // check for duplicate IDs
         if (CheckForDuplicateIDs()) {
             return;
         }
 
-        //get a dictionary of entries for each node
+        // get a dictionary of entries for each node
         List<Dictionary<string, string>> nodeEntries = new List<Dictionary<string, string>>();
         foreach(ChatNode node in sortedNodes) {
             nodeEntries.Add(node.GetChatNodeData());
         }
 
-        //now do the same for the disconnected nodes; they will always go after the sorted nodes and their connections may break
+        // now do the same for the disconnected nodes; they will always go after the sorted nodes and their connections may break
         foreach (ChatNode disconnectedNode in disconnectedNodes) {
             nodeEntries.Add(disconnectedNode.GetChatNodeData());
         }
 
-        //convert dictionaries to a JSON array
+        // convert dictionaries to a JSON array
         JSONArray allNodes = new JSONArray();
 
         foreach(Dictionary<string, string> nodeEntry in nodeEntries) {
 
-            //position is saved in dictionary; save as we go
+            // position is saved in dictionary; save as we go
             Vector2 positionToJSONArray = new Vector2();
 
-            //turn each ChatNode into a JSON obj...
+            // turn each ChatNode into a JSON obj...
             JSONObject singleNodeJSONObj = new JSONObject();
             foreach (KeyValuePair<string, string> pair in nodeEntry) {
 
-                //some fields require array post-processing
+                // some fields require array post-processing
                 if (pair.Key == "posx") { positionToJSONArray.x = float.Parse(pair.Value); }
                 else if (pair.Key == "posy") { positionToJSONArray.y = float.Parse(pair.Value); }
 
-                else if (pair.Key == "contents") {
+                else if (pair.Key == Constants.KEY_NODE_CONTENTS) {
                     string rawDialogue = pair.Value;
                     string[] splitDialogue = rawDialogue.Split(new string[] { "\n\n" }, StringSplitOptions.None);
 
@@ -271,28 +271,28 @@ public class NodeController : MonoBehaviour {
                     foreach(string lineOfDialogue in splitDialogue)
                         allDialogueArray.Add(lineOfDialogue);
 
-                    singleNodeJSONObj.Add("contents", allDialogueArray);
+                    singleNodeJSONObj.Add(Constants.KEY_NODE_CONTENTS, allDialogueArray);
                 }
 
                 else {
-                    singleNodeJSONObj.Add(pair.Key, pair.Value); //used for most fields if not array'ed
+                    singleNodeJSONObj.Add(pair.Key, pair.Value); // used for most fields if not array'd
                 }
             }
 
-            //...store coordinates of the node as array (we stored them as we looped through)...
+            // ...store coordinates of the node as array (we stored them as we looped through)...
             JSONArray position = new JSONArray();
             position.Add(positionToJSONArray.x);
             position.Add(positionToJSONArray.y);
             singleNodeJSONObj.Add(Constants.KEY_NODE_POSITION, position);
 
-            //... then add it to the full node array
+            // ...then add it to the full node array
             allNodes.Add(singleNodeJSONObj);
         }
         
-        //write the JSON
+        // write the JSON
         File.WriteAllText(exportFQN, allNodes.ToString());
 
-        //set the export name as the current file
+        // set the export name as the current file
         currentFileFQN = exportFQN;
         fileLoaded = true;
 
@@ -311,63 +311,62 @@ public class NodeController : MonoBehaviour {
             return;
         }
 
-        //load in the data
-        //no need to prepend resources path; this is called by the import window which has the FQN
+        // load in the data - no need to prepend resources path; this is called by the import window which has the FQN
         if (!File.Exists(importFileFQN)) {
             outputText.AddLine("ERROR IMPORTING: Could not find file: \"" + importFileFQN + "\"");
             return;
         }
 
-        //file exists; remember the FQN for quick export
+        // file exists; remember the FQN for quick export
         currentFileFQN = importFileFQN;
         fileLoaded = true;
 
         JSONArray loadedChatNodes = (JSONArray) JSON.Parse(File.ReadAllText(importFileFQN));
 
-        //flag and string for post-processed contents
+        // flag and string for post-processed contents
         bool addContents = false;
         string processedContents = "";
 
-        //set up dictionary for nexts
+        // set up dictionary for nexts
         Dictionary<string, List<string>> nextDictionary = new Dictionary<string, List<string>>();
 
-        //iterate over all the chatNode data and spawn them in
+        // iterate over all the chatNode data and spawn them in
         int i = 0;
         while (loadedChatNodes[i] != null) {
 
-            //get object and spawn a blank chatnode
+            // get object and spawn a blank chatnode
             JSONObject chatNodeJSONData = (JSONObject)loadedChatNodes[i];
             GameObject newChatNodeObject = Instantiate(chatNodePrefab, this.transform);
             newChatNodeObject.name = "ChatNode_" + i;
 
-            //if this is the first node, populate the head ID input field 
+            // if this is the first node, populate the head ID input field 
             if (i == 0) {
-                headIDInputField.text = loadedChatNodes[0]["id"].Value.ToString();
+                headIDInputField.text = loadedChatNodes[0][Constants.KEY_NODE_ID].Value.ToString();
             }
 
             float xPos;
             float yPos;
 
-            //obtain and then set the position
+            // obtain and then set the position
             JSONArray nodePosition = (JSONArray)chatNodeJSONData[Constants.KEY_NODE_POSITION];
             xPos = nodePosition[0];
             yPos = nodePosition[1];
             newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
 
-            //if this is the first node, focus the camera on it
+            // if this is the first node, focus the camera on it
             if (i == 0) {
                 Camera.main.transform.position = new Vector3(xPos, yPos, -10f);
             }
 
-            //add all the fields in the json to a dictionary by iterating over the keys
+            // add all the fields in the json to a dictionary by iterating over the keys
             Dictionary<string, string> nodeDataAsDictionary = new Dictionary<string, string>();
             JSONNode.KeyEnumerator keys = chatNodeJSONData.Keys;
             processedContents = "";
 
             foreach (string key in keys) {
-                if (key.Equals("contents")) {
+                if (key.Equals(Constants.KEY_NODE_CONTENTS)) {
 
-                    JSONArray contentAsJSON = (JSONArray) chatNodeJSONData["contents"];
+                    JSONArray contentAsJSON = (JSONArray) chatNodeJSONData[Constants.KEY_NODE_CONTENTS];
 
                     foreach (string ckey in contentAsJSON.Values) {
                         processedContents += ckey + "\n\n";
@@ -385,16 +384,16 @@ public class NodeController : MonoBehaviour {
                 }
             }
 
-            //add and remove contents
+            // add and remove contents
             if (addContents) {
                 nodeDataAsDictionary.Add("processedcontents", processedContents);
             }
-            nodeDataAsDictionary.Remove(Constants.KEY_NODE_POSITION); //we don't need position anymore, already applied it
+            nodeDataAsDictionary.Remove(Constants.KEY_NODE_POSITION); // we don't need position anymore, already applied it
 
-            //pass the JSON data to the node so it can populate itself
+            // pass the JSON data to the node so it can populate itself
             newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
 
-            //collect nub connections based on "nexts", then remove ones that aren't there (null)
+            // collect nub connections based on "nexts", then remove ones that aren't there (null)
             List<string> nextIDs = new List<string>();
             nextIDs.Add(chatNodeJSONData["next"]);
             nextIDs.Add(chatNodeJSONData["nextT"]);
@@ -414,22 +413,20 @@ public class NodeController : MonoBehaviour {
             i++;
         }
 
-        //iterate over all the spawned chatnodes in the scene and connect them
+        // iterate over all the spawned chatnodes in the scene and connect them
         GameObject[] allChatNodes = GameObject.FindGameObjectsWithTag("Node");
         foreach(GameObject n in allChatNodes) {
-            //get the ids of the next node
+            // get the ids of the next node
             ChatNode node = n.GetComponent<ChatNode>();
             string nodeID = node.GetID();
 
             List<string> nodeNextIDs = nextDictionary[nodeID];
             List<ConnectionNub> outgoingNubs = node.GetOutgoingNubs();
 
-            //connect jth outgoing nub for the ChatNode to the jth element of the next list
+            // connect jth outgoing nub for the ChatNode to the jth element of the next list
             for (int j = 0; j < nodeNextIDs.Count; j++) {
-                //find reference to the other "next" node
+                // find reference to the other "next" node
                 ChatNode descendantNode = GetChatNodeWithID(allChatNodes, nodeNextIDs[j]);
-
-                //call ConnectIncomingNub to connect the nub
                 descendantNode.ConnectIncomingNub(outgoingNubs[j]);
             }
         }
@@ -451,7 +448,6 @@ public class NodeController : MonoBehaviour {
                 return cNode;
             }
         }
-
         return null;
     }
 
@@ -468,12 +464,12 @@ public class NodeController : MonoBehaviour {
 
             TMPro.TMP_InputField thisNodeIDField = chatNode.GetComponent<ChatNode>().idInputField;
             
-            //if we're about to give a node the same ID as the head... skip that number
+            // if we're about to give a node the same ID as the head... skip that number
             if (i.ToString().Equals(headNodeID)) {
                 i++;
             }
             
-            //if this is the head node, skip renaming it
+            // if this is the head node, skip renaming it
             if (thisNodeIDField.text.Equals(headNodeID)) {
                 continue;
             }
@@ -542,14 +538,14 @@ public class NodeController : MonoBehaviour {
     #region Topological Sort Functions
 
     /* 
-     * Utilizes DFS to topologically sort all chatnodes, such that all predecessors of a given node appear before it in the order.
-     * This is required due to the way the VSCS-II chat system build the chattree from the JSON; they must be ordered topologically before saving them to JSON.
+     * Utilizes DFS to topologically sort all chatNodes, such that all predecessors of a given node appear before it in the order.
+     * This is required due to the way the VSCS chat system build the chatTree from the JSON; they must be ordered topologically before saving them to JSON.
      * ALG REF: https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search
      * Returns: Nothing; stores nodes in local variable sortedNodes. Cleaner signatures. 
      */
     private void TopologicalSortNodes(ChatNode[] nodesToSort, ChatNode headNode) {
 
-        //set up the marks, all false by default 
+        // set up the marks, all false by default 
         temporaryMarks = new Dictionary<string, bool>();
         permanentMarks = new Dictionary<string, bool>();
         foreach(ChatNode node in nodesToSort) {
@@ -557,7 +553,7 @@ public class NodeController : MonoBehaviour {
             permanentMarks[node.GetID()] = false;
         }
 
-        //DFS topological sort, loop until all a nodes permanently marked
+        // DFS topological sort, loop until all a nodes permanently marked
         sortedNodes = new List<ChatNode>();
 
         VisitNode(headNode);

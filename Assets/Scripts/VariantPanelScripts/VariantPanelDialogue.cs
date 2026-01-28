@@ -13,7 +13,7 @@ public class VariantPanelDialogue : VariantPanel {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
         ret.Add("speaker", speakerInputField.text);
-        ret.Add("contents", dialogueInputField.text);   // post processing on the dialogue is done when serializing to JSON
+        ret.Add(Constants.KEY_NODE_CONTENTS, dialogueInputField.text);   // post-processing on the dialogue is done when serializing to JSON
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
         ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
@@ -37,7 +37,7 @@ public class VariantPanelDialogue : VariantPanel {
     public override List<ChatNode> GetDescendantChatNodes() {
 
         if(nextNub.connectedNub == null) {
-            return new List<ChatNode> { }; //no connection => no descendants
+            return new List<ChatNode> { }; // no connection => no descendants
         }
         else {
             return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
