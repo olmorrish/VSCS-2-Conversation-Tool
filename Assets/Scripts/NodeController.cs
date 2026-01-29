@@ -260,8 +260,8 @@ public class NodeController : MonoBehaviour {
             foreach (KeyValuePair<string, string> pair in nodeEntry) {
 
                 // some fields require array post-processing
-                if (pair.Key == "posx") { positionToJSONArray.x = float.Parse(pair.Value); }
-                else if (pair.Key == "posy") { positionToJSONArray.y = float.Parse(pair.Value); }
+                if (pair.Key == Constants.KEY_NODE_POSITION_X) { positionToJSONArray.x = float.Parse(pair.Value); }
+                else if (pair.Key == Constants.KEY_NODE_POSITION_Y) { positionToJSONArray.y = float.Parse(pair.Value); }
 
                 else if (pair.Key == Constants.KEY_NODE_CONTENTS) {
                     string rawDialogue = pair.Value;
@@ -377,16 +377,16 @@ public class NodeController : MonoBehaviour {
                 }
 
                 else if (key.Equals(Constants.KEY_NODE_POSITION)) {
-                    //do nothing, we already applied this data to the transform and don't need to pass it to the node
+                    // do nothing, we already applied this data to the transform and don't need to pass it to the node
                 }
                 else {
-                    nodeDataAsDictionary.Add(key, chatNodeJSONData[key]); //no post-processing needed
+                    nodeDataAsDictionary.Add(key, chatNodeJSONData[key]); // no post-processing needed
                 }
             }
 
             // add and remove contents
             if (addContents) {
-                nodeDataAsDictionary.Add("processedcontents", processedContents);
+                nodeDataAsDictionary.Add(Constants.KEY_NODE_CONTENTS_PROCESSED, processedContents);
             }
             nodeDataAsDictionary.Remove(Constants.KEY_NODE_POSITION); // we don't need position anymore, already applied it
 

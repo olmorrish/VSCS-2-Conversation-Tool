@@ -11,11 +11,11 @@ public class VariantPanelNewSpeaker : VariantPanel {
     public override Dictionary<string, string> GetVariantPanelData() {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
-        ret.Add("param", newSpeakerNameInputField.text);
-        ret.Add("bnetid", newSpeakerBNETIDInputField.text);
+        ret.Add(Constants.KEY_SPEAKER, newSpeakerNameInputField.text);
+        ret.Add(Constants.KEY_BNET_ID, newSpeakerBNETIDInputField.text);
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
-        ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         return ret;
     }
@@ -24,24 +24,19 @@ public class VariantPanelNewSpeaker : VariantPanel {
 
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "param":
-                    newSpeakerNameInputField.text = pair.Value.ToString();
+                case Constants.KEY_SPEAKER:
+                    newSpeakerNameInputField.text = pair.Value;
                     break;
-                case "bnetid":
-                    newSpeakerBNETIDInputField.text = pair.Value.ToString();
+                case Constants.KEY_BNET_ID:
+                    newSpeakerBNETIDInputField.text = pair.Value;
                     break;
             }
         }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {
-
-        if (nextNub.connectedNub == null) {
-            return new List<ChatNode> { }; //no connection => no descendants
-        }
-        else {
-            return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
-        }
+        return nextNub.connectedNub == null ? new List<ChatNode> { } : // no connection => no descendants
+            new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
     }
 
     public override List<ConnectionNub> GetNubs() {

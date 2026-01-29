@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class VariantPanelDelay : VariantPanel {
 
@@ -10,10 +8,10 @@ public class VariantPanelDelay : VariantPanel {
     public override Dictionary<string, string> GetVariantPanelData() {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
-        ret.Add("delaylength", delayAmountInputField.text);
+        ret.Add(Constants.KEY_DELAY_LENGTH, delayAmountInputField.text);
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
-        ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         return ret;
     }
@@ -21,21 +19,16 @@ public class VariantPanelDelay : VariantPanel {
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "delaylength":
-                    delayAmountInputField.text = pair.Value.ToString();
+                case Constants.KEY_DELAY_LENGTH:
+                    delayAmountInputField.text = pair.Value;
                     break;
             }
         }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {
-
-        if (nextNub.connectedNub == null) {
-            return new List<ChatNode> { }; //no connection => no descendants
-        }
-        else {
-            return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
-        }
+        return nextNub.connectedNub == null ? new List<ChatNode> { } : // no connection => no descendants
+            new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
     }
 
     public override List<ConnectionNub> GetNubs() {

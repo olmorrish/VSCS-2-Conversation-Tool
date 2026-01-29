@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class VariantPanelBranchOnStoredBool : VariantPanel {
@@ -13,13 +12,13 @@ public class VariantPanelBranchOnStoredBool : VariantPanel {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
 
-        ret.Add("param", boolNameInputField.text);
+        ret.Add(Constants.KEY_BOOL_KEY, boolNameInputField.text);
 
         ConnectionNub nubOnNextNode = nextNubTrue.connectedNub;
-        ret.Add("nextT", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE_TRUE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         nubOnNextNode = nextNubFalse.connectedNub;
-        ret.Add("nextF", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE_FALSE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         return ret;
     }
@@ -28,8 +27,8 @@ public class VariantPanelBranchOnStoredBool : VariantPanel {
 
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "param":
-                    boolNameInputField.text = pair.Value.ToString();
+                case Constants.KEY_BOOL_KEY:
+                    boolNameInputField.text = pair.Value;
                     break;
             }
         }
@@ -39,7 +38,7 @@ public class VariantPanelBranchOnStoredBool : VariantPanel {
 
         List<ChatNode> nexts = new List<ChatNode>();
 
-        if (nextNubTrue.connectedNub != null) { //either one of the connections may be null
+        if (nextNubTrue.connectedNub != null) { // either one of the connections may be null
             nexts.Add(nextNubTrue.connectedNub.GetParentChatNode());
         }
         if (nextNubFalse.connectedNub != null) {

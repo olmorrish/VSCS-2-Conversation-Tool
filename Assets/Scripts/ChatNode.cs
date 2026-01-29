@@ -72,14 +72,14 @@ public class ChatNode : MonoBehaviour {
     /// <param name="otherNode"></param>
     public void CopyOtherNodeData(ChatNode otherNode) {
 
-        //header properties
+        // header properties
         idInputField.text = otherNode.idInputField.text + "c";
         nodetypeDropdown.value = otherNode.nodetypeDropdown.value;
         selectedType = otherNode.selectedType;
 
         NodeTypeSelected(nodetypeDropdown);
 
-        //package up the variant panel data and populate self using it
+        // package up the variant panel data and populate self using it
         Dictionary<string, string> otherNodeVariantData = otherNode.GetChatNodeData();
         currentVariantPanel.PopulateVariantPanelData(otherNodeVariantData);
     }
@@ -88,7 +88,7 @@ public class ChatNode : MonoBehaviour {
         string text = dropdown.options[dropdown.value].text;
         selectedType = (ChatNodeType)Enum.Parse(typeof(ChatNodeType), text);
 
-        //spawn in the proper variant panel, remove old one
+        // spawn in the proper variant panel, remove old one
         SpawnVariantPanel(selectedType);
     }
 
@@ -212,17 +212,17 @@ public class ChatNode : MonoBehaviour {
     /// Packages up data from self (ID, NodeType, Position) and current VariantPanel into a dictionary.
     /// This is used for serialization or getting data to create a copy of this node.
     /// </summary>
-    /// <returns>all data pertinent to this ChatNode.</returns>
+    /// <returns>All data pertinent to this ChatNode.</returns>
     public Dictionary<string, string> GetChatNodeData() {
         Dictionary<string, string> data = new Dictionary<string, string>();
 
-        data.Add("id", idInputField.text);
+        data.Add(Constants.KEY_NODE_ID, idInputField.text);
         data.Add(Constants.KEY_NODE_TYPE, selectedType.ToString());
 
-        data.Add("posx", transform.position.x.ToString());
-        data.Add("posy", transform.position.y.ToString());
+        data.Add(Constants.KEY_NODE_POSITION_X, transform.position.x.ToString());
+        data.Add(Constants.KEY_NODE_POSITION_Y, transform.position.y.ToString());
 
-        //add all the data that the Variant Panel gives, give warning if there isn't one
+        // add all the data that the Variant Panel gives, give warning if there isn't one
         if(currentVariantPanel == null) {
             Debug.LogError("ERROR EXPORTING: A node in the graph does not have a variant panel specified: ID of node is: \"" + GetID() + "\".");
         }

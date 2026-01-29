@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class VariantPanelPlayerResponse : VariantPanel {
 
@@ -14,14 +12,14 @@ public class VariantPanelPlayerResponse : VariantPanel {
     public override Dictionary<string, string> GetVariantPanelData() {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
-        ret.Add("param", correctResponseInputField.text);
-        ret.Add("speaker", speakerInputField.text);
-        ret.Add("wrongreaction1", wrongReaction1InputField.text);
-        ret.Add("wrongreaction2", wrongReaction2InputField.text);
-        ret.Add("wrongreaction3", wrongReaction3InputField.text);
+        ret.Add(Constants.KEY_EXPECTED_RESPONSE, correctResponseInputField.text); // TODO rename to "expected"
+        ret.Add(Constants.KEY_SPEAKER, speakerInputField.text);
+        ret.Add(Constants.KEY_WRONG_REACTION_1, wrongReaction1InputField.text);
+        ret.Add(Constants.KEY_WRONG_REACTION_2, wrongReaction2InputField.text);
+        ret.Add(Constants.KEY_WRONG_REACTION_3, wrongReaction3InputField.text);
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
-        ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         return ret;
     }
@@ -30,33 +28,28 @@ public class VariantPanelPlayerResponse : VariantPanel {
 
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "param":
-                    correctResponseInputField.text = pair.Value.ToString();
+                case Constants.KEY_EXPECTED_RESPONSE:
+                    correctResponseInputField.text = pair.Value;
                     break;
-                case "speaker":
-                    speakerInputField.text = pair.Value.ToString();
+                case Constants.KEY_SPEAKER:
+                    speakerInputField.text = pair.Value;
                     break;
-                case "wrongreaction1":
-                    wrongReaction1InputField.text = pair.Value.ToString();
+                case Constants.KEY_WRONG_REACTION_1:
+                    wrongReaction1InputField.text = pair.Value;
                     break;
-                case "wrongreaction2":
-                    wrongReaction2InputField.text = pair.Value.ToString();
+                case Constants.KEY_WRONG_REACTION_2:
+                    wrongReaction2InputField.text = pair.Value;
                     break;
-                case "wrongreaction3":
-                    wrongReaction3InputField.text = pair.Value.ToString();
+                case Constants.KEY_WRONG_REACTION_3:
+                    wrongReaction3InputField.text = pair.Value;
                     break;
             }
         }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {
-
-        if (nextNub.connectedNub == null) {
-            return new List<ChatNode> { }; //no connection => no descendants
-        }
-        else {
-            return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
-        }
+        return nextNub.connectedNub == null ? new List<ChatNode> { } : // no connection => no descendants
+            new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
     }
 
     public override List<ConnectionNub> GetNubs() {

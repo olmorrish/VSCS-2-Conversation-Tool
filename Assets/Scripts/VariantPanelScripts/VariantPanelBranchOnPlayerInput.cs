@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class VariantPanelBranchOnPlayerInput : VariantPanel {
@@ -33,20 +31,20 @@ public class VariantPanelBranchOnPlayerInput : VariantPanel {
 
         Dictionary<string, string> ret = new Dictionary<string, string>();
 
-        ret.Add("optionA", optionAInputField.text);
+        ret.Add(Constants.KEY_OPTION_A, optionAInputField.text);
         ConnectionNub nubOnNextNode = nextANub.connectedNub;
-        ret.Add("nextA", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE_A, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         if (optionBToggle.isOn) {
-            ret.Add("optionB", optionBInputField.text);
+            ret.Add(Constants.KEY_OPTION_B, optionBInputField.text);
             nubOnNextNode = nextBNub.connectedNub;
-            ret.Add("nextB", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+            ret.Add(Constants.KEY_NEXT_NODE_B, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
         }
 
         if (optionCToggle.isOn) {
-            ret.Add("optionC", optionCInputField.text);
+            ret.Add(Constants.KEY_OPTION_C, optionCInputField.text);
             nubOnNextNode = nextCNub.connectedNub;
-            ret.Add("nextC", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+            ret.Add(Constants.KEY_NEXT_NODE_C, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
         }
 
         return ret;
@@ -54,26 +52,26 @@ public class VariantPanelBranchOnPlayerInput : VariantPanel {
 
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
 
-        bool optionBWasInData = false; //B and C might not even be in the saved data
+        bool optionBWasInData = false; // B and C might not even be in the saved data
         bool optionCWasInData = false;
 
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "optionA":
-                    optionAInputField.text = pair.Value.ToString();
+                case Constants.KEY_OPTION_A:
+                    optionAInputField.text = pair.Value;
                     break;
-                case "optionB":
-                    optionBInputField.text = pair.Value.ToString();
+                case Constants.KEY_OPTION_B:
+                    optionBInputField.text = pair.Value;
                     optionBWasInData = true;
                     break;
-                case "optionC":
-                    optionCInputField.text = pair.Value.ToString();
+                case Constants.KEY_OPTION_C:
+                    optionCInputField.text = pair.Value;
                     optionCWasInData = true;
                     break;
             }
         }
 
-        //activate B and C toggles if we just populated those; else deactivate
+        // activate B and C toggles if we just populated those; else deactivate
         optionBToggle.isOn = optionBWasInData;
         optionCToggle.isOn = optionCWasInData;
     }
@@ -82,7 +80,7 @@ public class VariantPanelBranchOnPlayerInput : VariantPanel {
 
         List<ChatNode> nexts = new List<ChatNode>();
 
-        if (nextANub.connectedNub != null) { //either one of the connections may be null
+        if (nextANub.connectedNub != null) { // some of the connections may be null
             nexts.Add(nextANub.connectedNub.GetParentChatNode());
         }
         if (nextBNub.connectedNub != null && optionBToggle.isOn) {

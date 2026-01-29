@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class VariantPanelAddFeedArticle : VariantPanel {
 
@@ -9,10 +7,10 @@ public class VariantPanelAddFeedArticle : VariantPanel {
 
     public override Dictionary<string, string> GetVariantPanelData() {
         Dictionary<string, string> ret = new Dictionary<string, string>();
-        ret.Add("param", articleIDInputField.text);
+        ret.Add(Constants.KEY_ARTICLE_INTERNAL_NAME, articleIDInputField.text);
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
-        ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         return ret;
     }
@@ -20,22 +18,16 @@ public class VariantPanelAddFeedArticle : VariantPanel {
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "param":
-                    articleIDInputField.text = pair.Value.ToString();
+                case Constants.KEY_ARTICLE_INTERNAL_NAME:
+                    articleIDInputField.text = pair.Value;
                     break;
             }
         }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {
-
-        if (nextNub.connectedNub == null) {
-            return new List<ChatNode> { }; //no connection => no descendants
-        }
-        else {
-            return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
-        }
-
+        return nextNub.connectedNub == null ? new List<ChatNode> { } : // no connection => no descendants
+            new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
     }
 
     public override List<ConnectionNub> GetNubs() {

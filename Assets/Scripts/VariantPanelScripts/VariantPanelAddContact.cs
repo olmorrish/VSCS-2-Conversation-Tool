@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class VariantPanelAddContact : VariantPanel {
@@ -11,11 +10,11 @@ public class VariantPanelAddContact : VariantPanel {
 
     public override Dictionary<string, string> GetVariantPanelData() {
         Dictionary<string, string> ret = new Dictionary<string, string>();
-        ret.Add("param", contactNameInputField.text);
-        ret.Add("bnetid", contactBNETIDInputField.text);
+        ret.Add(Constants.KEY_CONTACT_NAME, contactNameInputField.text);
+        ret.Add(Constants.KEY_BNET_ID, contactBNETIDInputField.text);
 
         ConnectionNub nubOnNextNode = nextNub.connectedNub;
-        ret.Add("next", nubOnNextNode == null ? "TERMINATE" : nubOnNextNode.GetParentChatNode().GetID());
+        ret.Add(Constants.KEY_NEXT_NODE, nubOnNextNode == null ? Constants.VALUE_TERMINATE : nubOnNextNode.GetParentChatNode().GetID());
 
         return ret;
     }
@@ -23,24 +22,19 @@ public class VariantPanelAddContact : VariantPanel {
     public override void PopulateVariantPanelData(Dictionary<string, string> savedData) {
         foreach (KeyValuePair<string, string> pair in savedData) {
             switch (pair.Key) {
-                case "param":
-                    contactNameInputField.text = pair.Value.ToString();
+                case Constants.KEY_CONTACT_NAME:
+                    contactNameInputField.text = pair.Value;
                     break;
-                case "bnetid":
-                    contactBNETIDInputField.text = pair.Value.ToString();
+                case Constants.KEY_BNET_ID:
+                    contactBNETIDInputField.text = pair.Value;
                     break;
             }
         }
     }
 
     public override List<ChatNode> GetDescendantChatNodes() {
-
-        if (nextNub.connectedNub == null) {
-            return new List<ChatNode> { }; //no connection => no descendants
-        }
-        else {
-            return new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
-        }
+        return nextNub.connectedNub == null ? new List<ChatNode> { } : // no connection => no descendants
+            new List<ChatNode> { nextNub.connectedNub.GetParentChatNode() };
     }
 
     public override List<ConnectionNub> GetNubs() {
