@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 public class OutputText : MonoBehaviour {
@@ -20,8 +18,7 @@ public class OutputText : MonoBehaviour {
 
         textMesh.color = new Color(r, g, b);
     }
-
-
+    
     public void AddLine(string line) {
         textMesh.text = line + "\n" + textMesh.text;
 

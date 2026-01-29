@@ -25,15 +25,15 @@ public class ChatNode : MonoBehaviour {
 
     [Header("Variant Panel Prefabs")]
     public GameObject variantPanelAddBCPApp;
-    public GameObject variantPanelAddBCPFile; //done
-    public GameObject variantPanelAddContact; //done
+    public GameObject variantPanelAddBCPFile;
+    public GameObject variantPanelAddContact;
     public GameObject variantPanelAddFeedArticle;
     public GameObject variantPanelAddLogEntry;
     public GameObject variantPanelAudio;
     public GameObject variantPanelBranchOnPlayerInput;
-    public GameObject variantPanelBranchOnStoredBool; //done
+    public GameObject variantPanelBranchOnStoredBool;
     public GameObject variantPanelDelay;
-    public GameObject variantPanelDialogue; //done
+    public GameObject variantPanelDialogue;
     public GameObject variantPanelNewSpeaker;
     public GameObject variantPanelNote;
     public GameObject variantPanelPlayerResponse;

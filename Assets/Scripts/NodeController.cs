@@ -31,11 +31,13 @@ public class NodeController : MonoBehaviour {
     private Dictionary<string, bool> temporaryMarks;
     private Dictionary<string, bool> permanentMarks;
     private List<ChatNode> sortedNodes;
+    private Camera mainCamera;
 
     public void Awake() {
+        mainCamera = Camera.main;
         currentFileFQN = String.Empty;
         fileLoaded = false;
-        InvokeRepeating("UpdateTodoCount", 2, 5);
+        InvokeRepeating(nameof(UpdateTodoCount), 2, 5);
     }
 
     public void Start() {
@@ -45,13 +47,13 @@ public class NodeController : MonoBehaviour {
     public void Update() {
         if (Input.GetKey(KeyCode.LeftControl)) {
 
-            //CTRL+SHIFT
+            // CTRL+SHIFT
             if (Input.GetKey(KeyCode.LeftShift)) {
-                if (Input.GetKeyDown(KeyCode.N))    //CTRL+SHIFT+N => New File
+                if (Input.GetKeyDown(KeyCode.N))    // CTRL+SHIFT+N => New File
                     SpawnNewFileConfirmPopup(); 
             }
 
-            //CTRL Only
+            // CTRL Only
             else if (Input.GetKeyDown(KeyCode.S)) {
                 if (currentFileFQN != "")
                     Export();
@@ -78,7 +80,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnNewChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
-        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        newChatNode.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
     }
 
     /// <summary>
@@ -86,7 +88,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnNewDialogueChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
-        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        newChatNode.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
 
         newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("Dialogue");
     }
@@ -96,7 +98,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnNewBranchOnPlayerInputChatNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
-        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        newChatNode.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
         newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("BranchOnPlayerInput");
     }
 
@@ -105,7 +107,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnNewNoteNode() {
         GameObject newChatNode = Instantiate(chatNodePrefab, this.transform);
-        newChatNode.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        newChatNode.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
         newChatNode.GetComponent<ChatNode>().SetNodeTypeFromString("Note");
     }
 
@@ -114,7 +116,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnExportWindow() {
         GameObject newWindow = Instantiate(exportWindowPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -3);
+        newWindow.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, -3);
     }
 
     /// <summary>
@@ -122,7 +124,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnImportWindow() {
         GameObject newWindow = Instantiate(importWindowPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -2);
+        newWindow.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, -2);
     }
 
     /// <summary>
@@ -130,7 +132,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnQuitConfirmPopup() {
         GameObject newWindow = Instantiate(quitConfirmPopupPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -4);
+        newWindow.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, -4);
     }
 
     /// <summary>
@@ -138,7 +140,7 @@ public class NodeController : MonoBehaviour {
     /// </summary>
     public void SpawnNewFileConfirmPopup() {
         GameObject newWindow = Instantiate(newFileConfirmPopupPrefab, gameObject.transform);
-        newWindow.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -5);
+        newWindow.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, -5);
     }
 
     #endregion
@@ -170,7 +172,7 @@ public class NodeController : MonoBehaviour {
     /// <param name="toClone">The GameObject of the ChatNode to clone. Param is calling object.</param>
     public void SpawnChatNodeClone(GameObject toClone) {
         GameObject newChatNodeObject = Instantiate(chatNodePrefab, transform);
-        newChatNodeObject.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, 0);
+        newChatNodeObject.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
         ChatNode newChatNode = newChatNodeObject.GetComponent<ChatNode>();
         newChatNode.CopyOtherNodeData(toClone.GetComponent<ChatNode>());
     }
@@ -344,18 +346,15 @@ public class NodeController : MonoBehaviour {
                 headIDInputField.text = loadedChatNodes[0][Constants.KEY_NODE_ID].Value.ToString();
             }
 
-            float xPos;
-            float yPos;
-
             // obtain and then set the position
             JSONArray nodePosition = (JSONArray)chatNodeJSONData[Constants.KEY_NODE_POSITION];
-            xPos = nodePosition[0];
-            yPos = nodePosition[1];
+            float xPos = nodePosition[0];
+            float yPos = nodePosition[1];
             newChatNodeObject.transform.position = new Vector3(xPos, yPos, 0f);
 
             // if this is the first node, focus the camera on it
             if (i == 0) {
-                Camera.main.transform.position = new Vector3(xPos, yPos, -10f);
+                mainCamera.transform.position = new Vector3(xPos, yPos, -10f);
             }
 
             // add all the fields in the json to a dictionary by iterating over the keys
@@ -390,24 +389,25 @@ public class NodeController : MonoBehaviour {
             }
             nodeDataAsDictionary.Remove(Constants.KEY_NODE_POSITION); // we don't need position anymore, already applied it
 
-            // pass the JSON data to the node so it can populate itself
+            // pass the JSON data to the node so that it can populate itself
             newChatNodeObject.GetComponent<ChatNode>().PopulateChatNodeData(nodeDataAsDictionary);
 
             // collect nub connections based on "nexts", then remove ones that aren't there (null)
+            // TODO maybe collect these so they can be retrieved as an iterable from Constants.cs
             List<string> nextIDs = new List<string>();
-            nextIDs.Add(chatNodeJSONData["next"]);
-            nextIDs.Add(chatNodeJSONData["nextT"]);
-            nextIDs.Add(chatNodeJSONData["nextF"]);
-            nextIDs.Add(chatNodeJSONData["nextA"]);
-            nextIDs.Add(chatNodeJSONData["nextB"]);
-            nextIDs.Add(chatNodeJSONData["nextC"]);
+            nextIDs.Add(chatNodeJSONData[Constants.KEY_NEXT_NODE]);
+            nextIDs.Add(chatNodeJSONData[Constants.KEY_NEXT_NODE_TRUE]);
+            nextIDs.Add(chatNodeJSONData[Constants.KEY_NEXT_NODE_FALSE]);
+            nextIDs.Add(chatNodeJSONData[Constants.KEY_NEXT_NODE_A]);
+            nextIDs.Add(chatNodeJSONData[Constants.KEY_NEXT_NODE_B]);
+            nextIDs.Add(chatNodeJSONData[Constants.KEY_NEXT_NODE_C]);
 
             while (nextIDs.Contains(null))
                 nextIDs.Remove(null);
-            while (nextIDs.Contains("TERMINATE"))
-                nextIDs.Remove("TERMINATE");
+            while (nextIDs.Contains(Constants.VALUE_TERMINATE))
+                nextIDs.Remove(Constants.VALUE_TERMINATE);
 
-            //map the id of the new node to the list of it's nexts; once all nodes are spawned in, we make the connections
+            // map the id of the new node to the list of it's nexts; once all nodes are spawned in, we make the connections
             nextDictionary.Add(newChatNodeObject.GetComponent<ChatNode>().GetID(), nextIDs);
 
             i++;
@@ -453,7 +453,7 @@ public class NodeController : MonoBehaviour {
 
     /// <summary>
     /// Renames all the ChatNodes in the scene.
-    /// This will not change the head node ID, nor will i rename another node to have the same ID as the head node.
+    /// This will not change the head node ID, nor will it rename another node to have the same ID as the head node.
     /// </summary>
     public void AutoGenerateAllNodeIDs() {
         string headNodeID = headIDInputField.text;
@@ -499,9 +499,8 @@ public class NodeController : MonoBehaviour {
                 outputText.AddLine("ERROR EXPORTING: The ID \"" + id + "\" appears more than once in the exported nodes. This will likely cause an issue upon ChatSystem interpretation.");
                 return true;
             }
-            else {
-                allIDs.Add(id);
-            }
+            
+            allIDs.Add(id);
         }
 
         return false;

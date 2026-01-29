@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NewFileConfirmPopup : MonoBehaviour {
 
     private NodeController nodeController;
-    private static NewFileConfirmPopup instance; //this popup is a singleton, but new instances take precendent
+    private static NewFileConfirmPopup instance; //this popup is a singleton, but new instances take precedent
 
     // Start is called before the first frame update
     void Awake() {
