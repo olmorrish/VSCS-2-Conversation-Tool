@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HeadNodeIndicator : MonoBehaviour {
     
-    private ConnectionNub outgoingNub;
+    public ConnectionNub outgoingNub;
     
     /// <summary>
     /// Gets outgoing nubs, which can then be connected tothe head node. Obtained when making connections on import.
