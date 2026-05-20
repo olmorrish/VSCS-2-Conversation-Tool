@@ -328,7 +328,7 @@ GameObject:
   - component: {fileID: 9158102546298790484}
   - component: {fileID: 8588409033136309960}
   m_Layer: 0
-  m_Name: HeadNodeIndicator
+  m_Name: HeadNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

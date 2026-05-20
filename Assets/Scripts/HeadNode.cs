@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HeadNodeIndicator : MonoBehaviour {
+public class HeadNode : MonoBehaviour {
     
     public ConnectionNub outgoingNub;
     
